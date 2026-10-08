@@ -8,6 +8,7 @@
  * STATUS   : DONE
  */
 import { Link, useLocation } from 'react-router-dom';
+import DegradedBanner from '../DegradedBanner';
 
 export default function AppShell({ children }) {
   const loc = useLocation();
@@ -37,11 +38,11 @@ export default function AppShell({ children }) {
         </div>
         <div className="flex items-center gap-4">
           <div className="text-xs text-muted-foreground">run_id: pending | IST</div>
-          <Link to="/copilot" className="px-3 py-1 bg-secondary rounded text-sm">Copilot</Link>
+          <Link to="/copilot" className="px-3 py-1 bg-secondary rounded text-sm hover:bg-secondary/80 transition">Copilot</Link>
         </div>
       </header>
+      <DegradedBanner />
       <main className="flex-1 overflow-auto relative">
-        {/* DegradedBanner placeholder */}
         {children}
       </main>
     </div>
