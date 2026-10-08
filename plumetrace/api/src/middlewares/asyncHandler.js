@@ -5,5 +5,10 @@
  *   Wrap async controllers (copy from NotebookLM-Clone).
  * DONE WHEN: -
  * GUIDE    : docs/team/YASHO2.md  |  brief: docs/PROJECT_BRIEF.md
- * STATUS   : TODO   (update to WIP / DONE in this header when you work on it)
+ * STATUS   : DONE
  */
+
+/** Wrap an async route handler so thrown/rejected errors reach the error middleware. */
+const asyncHandler = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+
+export default asyncHandler;

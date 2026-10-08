@@ -5,5 +5,16 @@
  *   GET /fleet/:id/exposure (group fleet).
  * DONE WHEN: -
  * GUIDE    : docs/team/YASHO2.md  |  brief: docs/PROJECT_BRIEF.md
- * STATUS   : TODO   (update to WIP / DONE in this header when you work on it)
+ * STATUS   : DONE
  */
+import { Router } from 'express';
+import { validate } from '../middlewares/validate.middlewares.js';
+import { requireGroup } from '../middlewares/auth.middlewares.js';
+import { FleetExposureQuery } from '@plumetrace/contracts';
+import * as c from '../controllers/fleet.controllers.js';
+
+const router = Router();
+
+router.get('/fleet/:id/exposure', requireGroup('fleet'), validate(FleetExposureQuery, 'query'), c.getFleetExposure);
+
+export default router;

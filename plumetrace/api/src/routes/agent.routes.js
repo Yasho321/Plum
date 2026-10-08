@@ -5,5 +5,15 @@
  *   POST /agent/chat (SSE stream) -> agent.controllers.js.
  * DONE WHEN: -
  * GUIDE    : docs/team/YASHO2.md  |  brief: docs/PROJECT_BRIEF.md
- * STATUS   : TODO   (update to WIP / DONE in this header when you work on it)
+ * STATUS   : DONE
  */
+import { Router } from 'express';
+import { validate } from '../middlewares/validate.middlewares.js';
+import { ChatRequest } from '@plumetrace/contracts';
+import { chat } from '../controllers/agent.controllers.js';
+
+const router = Router();
+
+router.post('/agent/chat', validate(ChatRequest, 'body'), chat);
+
+export default router;
