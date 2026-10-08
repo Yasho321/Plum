@@ -14,6 +14,8 @@
 import * as cdk from "aws-cdk-lib";
 import { assertStage, REGION } from "../lib/config";
 import { DataStack } from "../lib/data-stack";
+import { EngineStack } from "../lib/engine-stack";
+import { ObservabilityStack } from "../lib/observability-stack";
 
 const app = new cdk.App();
 const stage = assertStage(app.node.tryGetContext("stage") ?? "dev");
@@ -25,10 +27,11 @@ const env: cdk.Environment = {
 
 // Dependency order: Data -> Engine -> Gov -> Fleet -> Agent -> Api -> Web -> Observability.
 const data = new DataStack(app, `PtData-${stage}`, { stage, env });
+const engine = new EngineStack(app, `PtEngine-${stage}`, { stage, env, data });
+const observability = new ObservabilityStack(app, `PtObs-${stage}`, { stage, env, engine });
 
-// As the other stacks land, wire them here, e.g.:
-//   const engine = new EngineStack(app, `PtEngine-${stage}`, { stage, env, data });
+// As the remaining stacks land, wire them here, e.g.:
 //   const api = new ApiStack(app, `PtApi-${stage}`, { stage, env, data, agent });
-void data;
+void observability;
 
 app.synth();
