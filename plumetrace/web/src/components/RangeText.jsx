@@ -5,5 +5,14 @@
  *   Renders 'X % (A–B %)' consistently everywhere.
  * DONE WHEN: -
  * GUIDE    : docs/team/TANMAY.md  |  brief: docs/PROJECT_BRIEF.md
- * STATUS   : TODO   (update to WIP / DONE in this header when you work on it)
+ * STATUS   : DONE
  */
+import { formatShare } from '../lib/format';
+
+export default function RangeText({ p50, p10, p90, className = '' }) {
+  return (
+    <span className={className}>
+      {formatShare(p50, p10, p90)}
+    </span>
+  );
+}
