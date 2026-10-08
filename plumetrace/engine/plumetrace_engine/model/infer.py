@@ -5,7 +5,7 @@ TASK     :
   Load models/lightgbm/<version>/{q10,q50,q90}.txt + metadata.json once per cold start (module-level cache). predict(df) -> p10/p50/p90 (expm1, sort to fix crossing). Fallback model 'persistence-v0' if no artefact exists so the pipeline never blocks on training.
 DONE WHEN: StationForecast items written for every station x lead.
 GUIDE    : docs/team/YASHO1.md  |  brief: docs/PROJECT_BRIEF.md
-STATUS   : WIP
+STATUS   : DONE
 """
 
 from __future__ import annotations
@@ -105,3 +105,77 @@ def predict_forecast(feat_df: pd.DataFrame, model=None, model_dir=None, cfg: Con
     out["pm25_p90"] = q[:, 2]
     out["model_version"] = model.model_version
     return out
+
+
+def run_forecast(run_id: str, model_dir: Optional[str] = None, cfg: Config = CONFIG) -> dict:
+    """End-to-end inference step (brief §7). Writes StationForecast and Attribution tables."""
+    from plumetrace_engine.common import ddb, s3io
+    from plumetrace_engine.model.attribution import fire_share, district_shares, aggregate_attribution
+
+    feat_key = s3io.key_features(run_id)
+    try:
+        feat_df = s3io.get_parquet(feat_key)
+    except Exception:
+        return {}
+    if feat_df.empty:
+        return {}
+
+    # 2. Predict + fire share
+    res_df = fire_share(feat_df, model_dir=model_dir, cfg=cfg)
+    
+    district_cols = [c for c in res_df.columns if c.startswith("fl_") and c not in ("fl_p50", "fl_p90")]
+    
+    # 3. Write StationForecast
+    station_items = []
+    for _, row in res_df.iterrows():
+        top = district_shares(row, district_cols)
+        item = ddb.build_station_item(
+            location_id=row["station_id"],
+            run_id=run_id,
+            valid_hour=row["valid_hour"],
+            lead_h=int(row["lead_h"]),
+            pm25_p10=int(round(row["pm25_p10"])),
+            pm25_p50=int(round(row["pm25_p50"])),
+            pm25_p90=int(round(row["pm25_p90"])),
+            fire_share=round(row["fire_share_p50"], 4),
+            fire_share_p10=round(row["fire_share_p10"], 4),
+            fire_share_p90=round(row["fire_share_p90"], 4),
+            top_sources=top,
+        )
+        station_items.append(item)
+    
+    n_station = ddb.batch_write("StationForecast", station_items)
+    
+    # 4. Attribution
+    receptors = list(feat_df["station_id"].unique())
+    
+    try:
+        fires_geo = s3io.get_json(s3io.key_outputs_fires_48h(run_id))
+        fire_rows = [f["properties"] for f in fires_geo.get("features", [])]
+        fires_df = pd.DataFrame(fire_rows)
+    except Exception:
+        fires_df = pd.DataFrame()
+
+    attr_df = aggregate_attribution(res_df, fires_df, receptors, cfg)
+    attr_items = []
+    for _, row in attr_df.iterrows():
+        item = ddb.build_attribution_item(
+            date=row["date"],
+            district=row["district"],
+            share_p10=float(row["share_p10"]),
+            share_p50=float(row["share_p50"]),
+            share_p90=float(row["share_p90"]),
+            fire_count=int(row["fire_count"]),
+            frp_sum_mw=float(row["frp_sum_mw"]),
+            receptor_stations=row["receptor_stations"],
+        )
+        attr_items.append(item)
+        
+    n_attr = ddb.batch_write("Attribution", attr_items)
+
+    return {
+        "max_pm25": int(round(res_df["pm25_p50"].max())),
+        "station_items_written": n_station,
+        "attribution_items_written": n_attr,
+        "model_version": res_df["model_version"].iloc[0]
+    }
