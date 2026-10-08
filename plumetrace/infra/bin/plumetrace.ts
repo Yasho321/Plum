@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * OWNER    : Tejas
  * DUE      : D1 13:00
@@ -5,5 +6,29 @@
  *   CDK app entry. Read context `stage` (dev | demo). Instantiate stacks in dependency order: Data -> Engine -> Gov -> Fleet -> Agent -> Api -> Web -> Observability. Prefix every resource name with `pt-${stage}`. Region us-east-1.
  * DONE WHEN: `npx cdk synth -c stage=dev` succeeds with all stacks.
  * GUIDE    : docs/team/TEJAS.md  |  brief: docs/PROJECT_BRIEF.md
- * STATUS   : TODO   (update to WIP / DONE in this header when you work on it)
+ * STATUS   : WIP
+ *   DataStack is wired and synths. The remaining stacks are added here as each lib/*
+ *   file starts exporting its class (Engine/Gov/Fleet/Web/Observability are mine;
+ *   Agent is Yasho2's) — then this flips to DONE when the full app synths.
  */
+import * as cdk from "aws-cdk-lib";
+import { assertStage, REGION } from "../lib/config";
+import { DataStack } from "../lib/data-stack";
+
+const app = new cdk.App();
+const stage = assertStage(app.node.tryGetContext("stage") ?? "dev");
+
+const env: cdk.Environment = {
+  account: process.env.CDK_DEFAULT_ACCOUNT,
+  region: REGION,
+};
+
+// Dependency order: Data -> Engine -> Gov -> Fleet -> Agent -> Api -> Web -> Observability.
+const data = new DataStack(app, `PtData-${stage}`, { stage, env });
+
+// As the other stacks land, wire them here, e.g.:
+//   const engine = new EngineStack(app, `PtEngine-${stage}`, { stage, env, data });
+//   const api = new ApiStack(app, `PtApi-${stage}`, { stage, env, data, agent });
+void data;
+
+app.synth();

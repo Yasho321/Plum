@@ -29,22 +29,22 @@ Copy the setup from `Yasho321/NotebookLM-Clone/frontend`: Vite config, Tailwind 
 - The UI for the demo (§19) and the screen recording for the backup video (AC10, with Khare).
 
 ## 6. Task list
-- [ ] **D1 12:00** Scaffold: `index.html`, `vite.config.js`, `main.jsx`, `index.css`, shadcn init (Button, Card, Tabs, Table, Badge, Dialog, Slider, Tooltip, ScrollArea), `.env.example`
-- [ ] **D1 13:00** `App.jsx` routes, `authStore.js`, `lib/api.js` (mock switch)
-- [ ] **D1 14:00** `AppShell.jsx`, `lib/aqi.js`, `lib/format.js`
-- [ ] **D1 16:00** `RangeText`, `SimulatedBadge`, `AqiLegend`, `hooks/queries.js`
-- [ ] **D1 18:00** `PlumeMap.jsx` showing mock H3 + fires
-- [ ] **D1 20:00** `layers.js` (all 4 layers), `TimeSlider.jsx`, `timeStore.js`: **the TripsLayer animation works on mocks**
-- [ ] **D2 10:00** `lib/sse.js`, `copilotStore.js`
-- [ ] **D2 12:00** `GovernmentPage.jsx`, `DegradedBanner`, `DoseBar`, `ToolCallStep`
-- [ ] **D2 14:00** `CopilotPanel.jsx`, `CopilotPage.jsx` (replays `mocks/chat_stream.jsonl`)
-- [ ] **D2 16:00** `ApprovalsPage.jsx`, `ActionCard`, `ActionPreview` (iframe report, `<audio>`, plan diff)
-- [ ] **D2 18:00** `FleetPage.jsx`. **CHECKPOINT 1: switch to the real API**, deploy on Amplify.
-- [ ] **D3 11:00** `lib/auth.js` + `LoginPage.jsx` (Cognito Hosted UI), role gating
-- [ ] **D3 12:00** `SkillPage.jsx` (recharts)
-- [ ] **D3 15:00** `ConsentPage.jsx`
-- [ ] **D3 20:00** Polish: smoke animation, loading/empty/error states, responsive layout, colour-blind check
-- [ ] **D4 AM** Drive the UI in rehearsals; record the backup video with Khare
+- [x] **D1 12:00** Scaffold: `index.html`, `vite.config.js`, `main.jsx`, `index.css`, shadcn init (Button, Card, Tabs, Table, Badge, Dialog, Slider, Tooltip, ScrollArea), `.env.example`
+- [x] **D1 13:00** `App.jsx` routes, `authStore.js`, `lib/api.js` (mock switch)
+- [x] **D1 14:00** `AppShell.jsx`, `lib/aqi.js`, `lib/format.js`
+- [x] **D1 16:00** `RangeText`, `SimulatedBadge`, `AqiLegend`, `hooks/queries.js`
+- [x] **D1 18:00** `PlumeMap.jsx` showing mock H3 + fires
+- [x] **D1 20:00** `layers.js` (all 4 layers), `TimeSlider.jsx`, `timeStore.js`: **the TripsLayer animation works on mocks**
+- [x] **D2 10:00** `lib/sse.js`, `copilotStore.js`
+- [x] **D2 12:00** `GovernmentPage.jsx`, `DegradedBanner`, `DoseBar`, `ToolCallStep`
+- [x] **D2 14:00** `CopilotPanel.jsx`, `CopilotPage.jsx` (replays `mocks/chat_stream.jsonl`)
+- [x] **D2 16:00** `ApprovalsPage.jsx`, `ActionCard`, `ActionPreview` (iframe report, `<audio>`, plan diff)
+- [x] **D2 18:00** `FleetPage.jsx`. **CHECKPOINT 1: switch to the real API**, deploy on Amplify.
+- [x] **D3 11:00** `lib/auth.js` + `LoginPage.jsx` (Cognito Hosted UI), role gating
+- [x] **D3 12:00** `SkillPage.jsx` (recharts)
+- [x] **D3 15:00** `ConsentPage.jsx`
+- [x] **D3 20:00** Polish: smoke animation, loading/empty/error states, responsive layout, colour-blind check
+- [x] **D4 AM** Drive the UI in rehearsals; record the backup video with Khare
 
 ## 7. How to implement (key guidance)
 
