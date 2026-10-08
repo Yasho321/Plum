@@ -1,0 +1,7 @@
+# OWNER    : Yasho1
+# DUE      : D1 12:00
+# TASK     :
+#   numpy pandas pyarrow xarray netCDF4 cfgrib eccodes scipy h3>=4 lightgbm shapely scikit-learn boto3 requests pydantic>=2
+# DONE WHEN: Docker build succeeds.
+# GUIDE    : docs/team/YASHO1.md  |  brief: docs/PROJECT_BRIEF.md
+# STATUS   : TODO   (update to WIP / DONE in this header when you work on it)
