@@ -104,6 +104,9 @@ def _item(cell, run_id, valid_hour, lead_h, vals, top=None) -> dict:
     item = {
         "pk": f"h3#{cell}",
         "sk": f"{run_id}#{valid_hour}",
+        # GSI byRun sort key (DECISIONS D-15 / HANDOFF #11): run_id + this lets the
+        # API query a whole map-for-hour via begins_with(gsi1sk, valid_hour).
+        "gsi1sk": f"{valid_hour}#{cell}",
         "run_id": run_id,
         "valid_hour": str(valid_hour),
         "lead_h": lead_h,

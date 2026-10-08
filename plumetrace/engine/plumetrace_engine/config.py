@@ -18,6 +18,15 @@ from dataclasses import dataclass, field, fields
 from functools import lru_cache
 from typing import Tuple
 
+# Single source for the region geometry (brief §6.1). Tejas owns common/aoi.py;
+# we import the boxes here instead of re-declaring the numbers (HANDOFF #12,
+# no-magic-numbers rule). These feed the dataclass defaults below.
+from plumetrace_engine.common.aoi import (
+    AOI as _AOI,
+    GFS_CROP_MARGIN_DEG as _CROP_MARGIN,
+    NCR_RECEPTOR as _NCR,
+)
+
 # ----------------------------------------------------------------------------
 # The single home for every tunable number in the engine (brief §10/§12/§13).
 # Rule (CLAUDE.md): no magic numbers anywhere else in engine/ — import from here.
@@ -33,11 +42,13 @@ from typing import Tuple
 @dataclass(frozen=True)
 class Config:
     # --- Area of interest (brief §6.1) : (west, south, east, north), WGS84 ---
-    aoi: Tuple[float, float, float, float] = (73.5, 27.5, 78.0, 32.7)
-    # Margin (degrees) added around the AOI before a trajectory is killed (§10.1).
-    aoi_margin_deg: float = 1.0
+    # Imported from common/aoi.py so there is one source of these numbers.
+    aoi: Tuple[float, float, float, float] = _AOI.as_wsen()
+    # Margin (degrees) added around the AOI before a trajectory is killed (§10.1);
+    # same 1° the GFS crop uses (brief §6.3), so we reuse that constant.
+    aoi_margin_deg: float = _CROP_MARGIN
     # --- Delhi-NCR receptor box : (west, south, east, north) (brief §6.1) ---
-    ncr_box: Tuple[float, float, float, float] = (76.8, 28.3, 77.6, 28.95)
+    ncr_box: Tuple[float, float, float, float] = _NCR.as_wsen()
 
     # --- H3 grid (brief §7) ---
     h3_res_fine: int = 7      # ~5.2 km^2 cells, the forecast grid
