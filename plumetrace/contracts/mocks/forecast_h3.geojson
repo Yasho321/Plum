@@ -1,0 +1,9 @@
+{
+  "_owner": "Yasho2",
+  "_due": "D1 12:00 (FREEZE)",
+  "_task": "Replace this placeholder with a realistic mock: ~150 H3 res-7 cells over Delhi-NCR with pm25/p10/p90/fire_share/top_sources; a few null cells (no data).",
+  "_done_when": "validate-mocks.js passes on it.",
+  "_status": "TODO",
+  "type": "FeatureCollection",
+  "features": []
+}

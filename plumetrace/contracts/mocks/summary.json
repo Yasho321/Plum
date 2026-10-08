@@ -1,0 +1,7 @@
+{
+  "_owner": "Yasho2",
+  "_due": "D1 12:00 (FREEZE)",
+  "_task": "Replace this placeholder with a realistic mock: RunSummary / summary.json (§8.2 outputs/run=/summary.json) — use realistic Delhi numbers: max_pm25 ~310, delhi_fire_share_p50 0.31 (0.22–0.40), Sangrur/Patiala hotspots.",
+  "_done_when": "validate-mocks.js passes on it.",
+  "_status": "TODO"
+}

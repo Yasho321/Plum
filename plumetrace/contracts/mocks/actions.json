@@ -1,0 +1,7 @@
+{
+  "_owner": "Yasho2",
+  "_due": "D1 12:00 (FREEZE)",
+  "_task": "Replace this placeholder with a realistic mock: ActionList: one draft of each type (district_report, farmer_alert, shift_plan, rider_notify).",
+  "_done_when": "validate-mocks.js passes on it.",
+  "_status": "TODO"
+}

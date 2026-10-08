@@ -1,0 +1,7 @@
+{
+  "_owner": "Yasho2",
+  "_due": "D1 12:00 (FREEZE)",
+  "_task": "Replace this placeholder with a realistic mock: SkillResponse: 4 lead buckets x {backtest, live} with mae, rmse, coverage_p10_p90, skill_vs_persistence, severe_hit_rate.",
+  "_done_when": "validate-mocks.js passes on it.",
+  "_status": "TODO"
+}

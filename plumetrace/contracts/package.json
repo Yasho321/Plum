@@ -1,0 +1,14 @@
+{
+  "//": "OWNER: Yasho2 | TASK: shared zod contracts package (brief §8). FROZEN at D1 12:00. See docs/team/YASHO2.md",
+  "name": "@plumetrace/contracts",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "export": "node scripts/export-json-schema.js",
+    "validate": "node scripts/validate-mocks.js"
+  },
+  "dependencies": {
+    "zod": "^4.0.0"
+  }
+}

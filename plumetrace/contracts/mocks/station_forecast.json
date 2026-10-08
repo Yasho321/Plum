@@ -1,0 +1,7 @@
+{
+  "_owner": "Yasho2",
+  "_due": "D1 12:00 (FREEZE)",
+  "_task": "Replace this placeholder with a realistic mock: StationSeries for 3 stations, lead 0..72, with obs_pm25 for the first 24 h.",
+  "_done_when": "validate-mocks.js passes on it.",
+  "_status": "TODO"
+}

@@ -1,0 +1,9 @@
+{
+  "_owner": "Yasho2",
+  "_due": "D1 12:00 (FREEZE)",
+  "_task": "Replace this placeholder with a realistic mock: 9 LineStrings (3 stations x 3 valid hours) going NW into Punjab, timestamps[] per vertex (epoch s) for deck.gl TripsLayer.",
+  "_done_when": "validate-mocks.js passes on it.",
+  "_status": "TODO",
+  "type": "FeatureCollection",
+  "features": []
+}
