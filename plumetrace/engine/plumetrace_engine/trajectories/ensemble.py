@@ -150,7 +150,7 @@ def to_trajectories_geojson(tset: TrajectorySet) -> dict:
             continue
         coords = [[float(t.lon[i, j]), float(t.lat[i, j])] for j in range(k)]
         ts = [int(epoch[i, j]) for j in range(k)]
-        vh = pd.Timestamp(tset.valid_hour[i]).strftime("%Y-%m-%dT%H:%M:%SZ")
+        vh = pd.Timestamp(tset.valid_hour[i]).strftime("%Y-%m-%dT%H:%MZ")
         features.append({
             "type": "Feature",
             "geometry": {"type": "LineString", "coordinates": coords},

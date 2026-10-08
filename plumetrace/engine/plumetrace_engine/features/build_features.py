@@ -135,7 +135,8 @@ def build_features(
             row = {
                 "station_id": sid,
                 "lead_h": lead,
-                "valid_hour": vh.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                # minute precision, no seconds — matches the ValidHour contract
+                "valid_hour": vh.strftime("%Y-%m-%dT%H:%MZ"),
                 "pm25_now": pm25_now,
                 "pm25_mean_24h": pm25_mean_24h,
                 "pm25_same_hour_yday": same_hour_yday,
