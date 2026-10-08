@@ -15,6 +15,10 @@ import * as cdk from "aws-cdk-lib";
 import { assertStage, REGION } from "../lib/config";
 import { DataStack } from "../lib/data-stack";
 import { EngineStack } from "../lib/engine-stack";
+import { ApiStack } from "../lib/api-stack";
+import { GovStack } from "../lib/gov-stack";
+import { FleetStack } from "../lib/fleet-stack";
+import { WebStack } from "../lib/web-stack";
 import { ObservabilityStack } from "../lib/observability-stack";
 
 const app = new cdk.App();
@@ -28,10 +32,13 @@ const env: cdk.Environment = {
 // Dependency order: Data -> Engine -> Gov -> Fleet -> Agent -> Api -> Web -> Observability.
 const data = new DataStack(app, `PtData-${stage}`, { stage, env });
 const engine = new EngineStack(app, `PtEngine-${stage}`, { stage, env, data });
+const gov = new GovStack(app, `PtGov-${stage}`, { stage, env, data, busName: engine.bus.eventBusName });
+const fleet = new FleetStack(app, `PtFleet-${stage}`, { stage, env, data, busName: engine.bus.eventBusName });
+// AgentStack (Yasho2) provides guardrailId; wire it into ApiStack once it exists.
+const api = new ApiStack(app, `PtApi-${stage}`, { stage, env, data, busName: engine.bus.eventBusName });
+const web = new WebStack(app, `PtWeb-${stage}`, { stage, env });
 const observability = new ObservabilityStack(app, `PtObs-${stage}`, { stage, env, engine });
 
-// As the remaining stacks land, wire them here, e.g.:
-//   const api = new ApiStack(app, `PtApi-${stage}`, { stage, env, data, agent });
-void observability;
+void [gov, fleet, api, web, observability];
 
 app.synth();
