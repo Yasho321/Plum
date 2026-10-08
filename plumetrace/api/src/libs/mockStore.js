@@ -106,6 +106,26 @@ export function setConsent(id, consent) {
   return { rider_id: id, consent_health: !!consent, consent_ts: nowIso() };
 }
 
+/** Add a fresh draft action (used by the agent draft tools in MOCK_MODE). */
+export function addDraft(type, payload) {
+  const id = (globalThis.crypto?.randomUUID?.() ?? `mock-${Date.now()}-${actions.length}`);
+  const ts = nowIso();
+  const item = {
+    pk: `action#${id}`,
+    action_id: id,
+    type,
+    status: 'draft',
+    payload: payload ?? {},
+    created_by: 'agent',
+    approved_by: null,
+    run_id: getSummary().run_id,
+    created_at: ts,
+    updated_at: ts,
+  };
+  actions.push(item);
+  return item;
+}
+
 /** Reset mutable state (used by tests / demo_reset). */
 export function resetActions() {
   actions = readJson('actions.json').actions.map((a) => ({ ...a }));
