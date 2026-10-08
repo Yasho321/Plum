@@ -19,7 +19,9 @@ import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import { appConfig, SECRET_NAMES, Stage } from "./config";
 import type { DataStack } from "./data-stack";
 
-const GOV_SRC = path.join(__dirname, "..", "..", "gov", "src");
+const REPO_ROOT = path.join(__dirname, "..", "..");
+const GOV_SRC = path.join(REPO_ROOT, "gov", "src");
+const DEPS_LOCK = path.join(__dirname, "..", "package-lock.json");
 
 export interface GovStackProps extends cdk.StackProps {
   stage: Stage;
@@ -49,6 +51,8 @@ export class GovStack extends cdk.Stack {
         runtime: lambda.Runtime.NODEJS_20_X,
         entry: path.join(GOV_SRC, entryRel),
         handler: "handler",
+        projectRoot: REPO_ROOT,
+        depsLockFilePath: DEPS_LOCK,
         memorySize: memoryMb,
         timeout: cdk.Duration.seconds(timeoutS),
         environment: commonEnv,

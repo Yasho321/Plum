@@ -113,10 +113,10 @@ export class EngineStack extends cdk.Stack {
     const gfsMap = new sfn.Map(this, "IngestGFS", {
       itemsPath: "$.hours",
       maxConcurrency: 20,
-      parameters: { "run_id.$": "$.run_id", "fff.$": "$$.Map.Item.Value", "degraded.$": "$.degraded" },
+      itemSelector: { "run_id.$": "$.run_id", "fff.$": "$$.Map.Item.Value", "degraded.$": "$.degraded" },
       resultPath: "$.gfs",
     });
-    gfsMap.iterator(invoke("IngestGFSHour", ingestGfsFn, { retry: true }));
+    gfsMap.itemProcessor(invoke("IngestGFSHour", ingestGfsFn, { retry: true }));
     const gfsBranch = buildHours.next(gfsMap);
 
     const ingestParallel = new sfn.Parallel(this, "IngestParallel", { resultPath: "$.ingest" })
