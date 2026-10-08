@@ -43,23 +43,23 @@ docs/slides/OUTLINE.md, demo/DEMO_SCRIPT.md
 | Rider notify Lambda (`draftRiderNotifications`) | Yasho2 | D3 11:00 |
 
 ## 6. Task list
-- [ ] **D1 11:00** Create the Telegram bot (@BotFather). Put `{bot_token, chats:{gov, farmer_demo, rider_demo}}` in Secrets Manager `plumetrace/telegram` (ask Tejas). Run `aws polly describe-voices --language-code pa-IN` (**VERIFY a Punjabi voice**) and record the result in DECISIONS.
-- [ ] **D1 14:00** `static/districts.geojson` + licence in `static/README.md` (geoBoundaries IND ADM2 is CC BY 4.0, VERIFY; filter it to Punjab, Haryana, Delhi and UP; simplify to < 3 MB). Synthetic `chc_centres.geojson` with about 30 points in the hotspot districts, labelled synthetic.
-- [ ] **D1 14:00** `fleet/dose/dose.py` + `tests/fleet/test_dose.py` (mandatory)
-- [ ] **D1 15:00** `fleet/simulator/generate_fleet.py`
-- [ ] **D1 18:00** `fleet/simulator/generate_orders.py` (baseline plan into Shifts), `fleet/common/forecast_lookup.py`, `gov/src/lib/data.js`, `gov/src/lib/geo.js`
-- [ ] **D1 20:00** `gov/src/delivery/telegram.js`: a test message reaches the phone
-- [ ] **D1 24:00** `reportGenerator/template.html`, `svgMap.js`, `render.js`
-- [ ] **D2 13:00** `reportGenerator/handler.js` (PDF via headless Chromium)
-- [ ] **D2 14:00** `farmerAlert/compose.js`, `translate.js`, `gov/tests/compose.test.js`
-- [ ] **D2 16:00** `farmerAlert/polly.js`, `farmerAlert/handler.js`; `fleet/dose/handler.py`
-- [ ] **D2 18:00** `verification/fireTrend.js`, `autoDraft/handler.js`
-- [ ] **D2 24:00** `executor/handler.js`: **approve → phone gets text + MP3 in < 30 s (AC6)**
-- [ ] **D3 11:00** `fleet/notify/rider_messages.py`
-- [ ] **D3 12:00** `fleet/simulator/gps_replay.py`. Get the Punjabi text reviewed by a native speaker.
-- [ ] **D3 14:00** `verification/govVerify.js`
-- [ ] **D3 15:00** `fleet/verify/fleet_verify.py`
-- [ ] **D3 20:00** `docs/slides/OUTLINE.md`, `demo/DEMO_SCRIPT.md`; `delivery/ses.js` (optional backup)
+- [x] **D1 11:00** Create the Telegram bot (@BotFather). Put `{bot_token, chats:{gov, farmer_demo, rider_demo}}` in Secrets Manager `plumetrace/telegram` (ask Tejas). Run `aws polly describe-voices --language-code pa-IN` (**VERIFY a Punjabi voice**) and record the result in DECISIONS.
+- [x] **D1 14:00** `static/districts.geojson` + licence in `static/README.md` (geoBoundaries IND ADM2 is CC BY 4.0, VERIFY; filter it to Punjab, Haryana, Delhi and UP; simplify to < 3 MB). Synthetic `chc_centres.geojson` with about 30 points in the hotspot districts, labelled synthetic.
+- [x] **D1 14:00** `fleet/dose/dose.py` + `tests/fleet/test_dose.py` (mandatory)
+- [x] **D1 15:00** `fleet/simulator/generate_fleet.py`
+- [x] **D1 18:00** `fleet/simulator/generate_orders.py` (baseline plan into Shifts), `fleet/common/forecast_lookup.py`, `gov/src/lib/data.js`, `gov/src/lib/geo.js`
+- [x] **D1 20:00** `gov/src/delivery/telegram.js`: a test message reaches the phone
+- [x] **D1 24:00** `reportGenerator/template.html`, `svgMap.js`, `render.js`
+- [x] **D2 13:00** `reportGenerator/handler.js` (PDF via headless Chromium)
+- [x] **D2 14:00** `farmerAlert/compose.js`, `translate.js`, `gov/tests/compose.test.js`
+- [x] **D2 16:00** `farmerAlert/polly.js`, `farmerAlert/handler.js`; `fleet/dose/handler.py`
+- [x] **D2 18:00** `verification/fireTrend.js`, `autoDraft/handler.js`
+- [x] **D2 24:00** `executor/handler.js`: **approve → phone gets text + MP3 in < 30 s (AC6)**
+- [x] **D3 11:00** `fleet/notify/rider_messages.py`
+- [x] **D3 12:00** `fleet/simulator/gps_replay.py`. Get the Punjabi text reviewed by a native speaker.
+- [x] **D3 14:00** `verification/govVerify.js`
+- [x] **D3 15:00** `fleet/verify/fleet_verify.py`
+- [x] **D3 20:00** `docs/slides/OUTLINE.md`, `demo/DEMO_SCRIPT.md`; `delivery/ses.js` (optional backup)
 - [ ] **D4 AM** Lead 3 rehearsals; record the backup video with Tanmay (AC10)
 
 ## 7. How to implement (key guidance)
