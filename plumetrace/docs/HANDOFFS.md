@@ -10,3 +10,4 @@
 | 3 | Yasho2 | Khare | `fleet/dose/dose.py` | Function signatures as in the file header (the re-planner imports them) | D1 14:00 | OPEN |
 | 4 | Yasho1 | Tejas | `training/backfill/*` | ERA5 + FIRMS + OpenAQ for Oct–Nov 2024/2025 in S3 | D1 22:00 | OPEN |
 | 5 | Tanmay | Yasho2 | mock API URL | Deployed MOCK_MODE API + a Cognito test user per group | D1 14:00 / 18:00 | OPEN |
+| 6 | Tejas | Yasho1 | `engine/plumetrace_engine/config.py` | AOI + NCR receptor box now live in `common/aoi.py` (AOI, NCR_RECEPTOR, GFS_CROP_MARGIN_DEG) — please `from plumetrace_engine.common.aoi import AOI, NCR_RECEPTOR` in config.py instead of re-hardcoding those numbers, so there's one source (no-magic-numbers rule). | D1 12:00 | OPEN |
