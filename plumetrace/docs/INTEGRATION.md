@@ -10,9 +10,15 @@
 | `demo` | Tejas only, from `main`, from D3 | what the judges see |
 
 ## Checkpoint 0: D1 12:00, contracts freeze
-- [ ] `contracts/` merged; `npm run validate` passes; `pytest tests/contracts` passes
+- [x] `contracts/` built on `yasho2/contracts`; `cd contracts && npm run validate` passes (11/11); `pytest tests/contracts` passes (12). Awaiting merge to `main`.
 - [ ] Every owner has read the schemas for their inputs and outputs and said "OK" in the chat
-- [ ] The Bedrock model is enabled in us-east-1 (model ID recorded in `infra/cdk.json`)
+- [ ] The Bedrock model is enabled in us-east-1 (model ID recorded in `infra/cdk.json`) — **blocked on Tejas** (HANDOFFS #6)
+- [x] Mock API ready for Tanmay: `cd api && MOCK_MODE=1 bun run dev` serves every §8.4 route from `contracts/mocks` on `:8080` (14/14 contract tests pass). Needs Tejas to deploy `api/Dockerfile` for a shared URL (HANDOFFS #7).
+
+> **Windows note:** if `bun install` in `api/` reports "Failed to install 1 package" for
+> `@plumetrace/contracts` (EPERM copying the local file: dep), recreate the link with a
+> junction: `New-Item -ItemType Junction api/node_modules/@plumetrace/contracts -Target contracts`.
+> Not an issue on Linux/CI.
 
 ## Checkpoint 1: D2 18:00, real data replaces mocks
 - [ ] `EngineRun` succeeds on the latest GFS cycle (Step Functions console is green)
