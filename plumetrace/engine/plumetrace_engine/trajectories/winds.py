@@ -63,6 +63,9 @@ class WindField:
         lat = np.atleast_1d(np.asarray(lat, dtype="float64"))
         lon = np.atleast_1d(np.asarray(lon, dtype="float64"))
         tt = pd.to_datetime(np.atleast_1d(t))
+        # xarray.interp needs tz-naive datetime64; our datasets store naive UTC.
+        if getattr(tt, "tz", None) is not None:
+            tt = tt.tz_convert("UTC").tz_localize(None)
         n = max(lat.size, lon.size, tt.size)
         lat = np.broadcast_to(lat, (n,))
         lon = np.broadcast_to(lon, (n,))
