@@ -10,3 +10,4 @@
 | 3 | Yasho2 | Khare | `fleet/dose/dose.py` | Function signatures as in the file header (the re-planner imports them) | D1 14:00 | OPEN |
 | 4 | Yasho1 | Tejas | `training/backfill/*` | ERA5 + FIRMS + OpenAQ for Oct–Nov 2024/2025 in S3 | D1 22:00 | OPEN |
 | 5 | Tanmay | Yasho2 | mock API URL | Deployed MOCK_MODE API + a Cognito test user per group | D1 14:00 / 18:00 | OPEN |
+| 6 | Khare | Tejas | Secrets Manager | Create Telegram bot (@BotFather) and put {bot_token, chats:{gov, farmer_demo, rider_demo}} in `plumetrace/telegram` | D1 11:00 | OPEN |

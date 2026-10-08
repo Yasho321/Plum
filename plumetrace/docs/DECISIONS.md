@@ -19,3 +19,4 @@
 | D-12 | **Order of the Attribution step:** the Attribution step computes `FL_d`, and the Forecast step finalises the district shares (it needs `fire_share` from the model) before writing the Attribution table. | §10.5 needs the model output. | Yasho1 | D1 |
 | D-13 | Sentinel-5P (stretch S1) is decided **after CP2 only** (open question 4). | Scope control. | Team | D1 |
 | D-14 | District boundaries: _TBD by Khare. Record the source and licence here._ (open question 5) | | Khare | D1 |
+| D-15 | **No Punjabi voice in Polly.** Use Hindi (`hi-IN`, Aditi/Kajal) for audio and send Punjabi as text. | `aws polly describe-voices` shows no `pa-IN` voice available. | Khare | D1 |
