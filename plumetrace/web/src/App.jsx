@@ -10,14 +10,14 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './stores/authStore';
 
-const AppShell = ({ children }) => <div>{children}</div>;
-const GovernmentPage = () => <div>Gov</div>;
-const FleetPage = () => <div>Fleet</div>;
-const SkillPage = () => <div>Skill</div>;
-const ApprovalsPage = () => <div>Approvals</div>;
-const CopilotPage = () => <div>Copilot</div>;
-const LoginPage = () => <div>Login</div>;
-const ConsentPage = () => <div>Consent</div>;
+import AppShell from './components/layout/AppShell';
+import GovernmentPage from './pages/GovernmentPage';
+import FleetPage from './pages/FleetPage';
+import SkillPage from './pages/SkillPage';
+import ApprovalsPage from './pages/ApprovalsPage';
+import CopilotPage from './pages/CopilotPage';
+import LoginPage from './pages/LoginPage';
+import ConsentPage from './pages/ConsentPage';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { tokens, groups } = useAuthStore();
