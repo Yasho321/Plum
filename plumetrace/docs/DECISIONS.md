@@ -1,0 +1,21 @@
+# Decisions log
+
+> OWNER: Yasho2 (curator). Anyone can add an entry, but contract-affecting entries need Yasho2's approval.
+> Format: ID · decision · reason · who · when. This file overrides the brief where they differ.
+
+| ID | Decision | Reason | Who | When |
+|---|---|---|---|---|
+| D-01 | **Frontend: React 19 + Vite** (Zustand, Tailwind v4, shadcn/Radix, TanStack Query), not Next.js. Hosted on **Amplify Hosting** as a static SPA. | It is the team's known stack (NotebookLM-Clone), and we need no SSR. | Team | D1 |
+| D-02 | **API: Bun + Express 5** in a container on **Lambda with AWS Lambda Web Adapter** (response streaming), behind API Gateway HTTP API with a Cognito JWT authorizer. | Known stack; serverless; SSE works with LWA response streaming. | Yasho2 | D1 |
+| D-03 | **Agent: a Bedrock ConverseStream tool-use loop inside the API** with Bedrock Guardrails, not Bedrock Agents action groups (answers brief open question 1). Tools are zod-typed (`contracts/src/agentTools.js`). | It is the fastest to build and debug, streams tool steps to the UI, and is the same pattern as our @openai/agents code. We can move to AgentCore later if time allows. | Yasho2 | D1 |
+| D-04 | **Contracts: zod is the source of truth**, exported to JSON Schema and mirrored by hand in Pydantic. Contract tests check both against the mocks. | One schema language for JS; Python stays in sync through tests. | Yasho2 | D1 |
+| D-05 | **Python stays** for engine/, training/ and fleet/ (cfgrib/eccodes, LightGBM, h3, OR-Tools). Gov Lambdas use Node 20. | Libraries. | Team | D1 |
+| D-06 | **No Redis/BullMQ.** Async work runs on Step Functions + EventBridge + Lambda. The brief's "Gov Step Function" is a single `gov/autoDraft` Lambda on `forecast.published`. | Simpler, and still AWS-native. | Tejas | D1 |
+| D-07 | **Live delivery channel: Telegram bot** (text + MP3 + PDF). SES email is the backup (answers open question 2). | Shows live on a phone and needs no DLT. | Khare | D1 |
+| D-08 | **GFS steps: hourly f000–f072** by default; config flag to switch to 3-hourly if the Map state is too slow (answers open question 3). | Smoother trajectories. | Tejas/Yasho1 | D1 |
+| D-09 | **Region us-east-1** for everything except the global Amplify front. One AWS account, stages `dev` (shared) and `demo` (deployed from main from D3). Resource names are prefixed `pt-<stage>`. | Data locality and Bedrock availability. | Tejas | D1 |
+| D-10 | **Contract additions to §8:** `summary.json` and `forecast.published` also carry `hotspot_villages[]` and `degraded[]`. New S3 keys: `outputs/run=<id>/fires_48h.geojson`, `outputs/latest.json` (pointer), `outputs/skill/{latest,backtest}.json`, `curated/stations/stations.json`. | The report, the farmer alert, the map and the skill page need them. | Yasho2 | D1 |
+| D-11 | **New table `RouteCache`** (PK `o#<h3>`, SK `d#<h3>`, `minutes`, `km`) for Amazon Location route-matrix caching. | Brief §13.3 says to cache in DynamoDB. | Yasho2 | D1 |
+| D-12 | **Order of the Attribution step:** the Attribution step computes `FL_d`, and the Forecast step finalises the district shares (it needs `fire_share` from the model) before writing the Attribution table. | §10.5 needs the model output. | Yasho1 | D1 |
+| D-13 | Sentinel-5P (stretch S1) is decided **after CP2 only** (open question 4). | Scope control. | Team | D1 |
+| D-14 | District boundaries: _TBD by Khare. Record the source and licence here._ (open question 5) | | Khare | D1 |

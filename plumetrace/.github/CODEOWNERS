@@ -1,0 +1,21 @@
+# OWNER: Tejas | TASK: map folders to owners so PRs auto-request the right reviewer.
+# Replace the *_GH placeholders with real GitHub usernames on D1 before 11:00.
+# Yasho1 and Yasho2 are the same GitHub user (@Yasho321). Later rules override earlier ones.
+*                                          @Yasho321
+/contracts/                                @Yasho321
+/api/                                      @Yasho321
+/engine/                                   @Yasho321
+/training/                                 @Yasho321 @TEJAS_GH
+/engine/plumetrace_engine/ingest/          @TEJAS_GH
+/engine/plumetrace_engine/common/          @TEJAS_GH
+/engine/plumetrace_engine/handlers.py      @TEJAS_GH
+/engine/Dockerfile                         @TEJAS_GH
+/infra/                                    @TEJAS_GH
+/infra/lib/agent-stack.ts                  @Yasho321
+/.github/                                  @TEJAS_GH
+/web/                                      @TANMAY_GH
+/gov/                                      @KHARE_GH
+/fleet/                                    @KHARE_GH
+/fleet/replanner/                          @Yasho321
+/static/                                   @KHARE_GH
+/demo/                                     @KHARE_GH

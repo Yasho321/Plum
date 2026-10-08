@@ -1,0 +1,67 @@
+# OWNER: Tejas | TASK: CI on every push and PR (same idea as the NotebookLM-Clone CI). Keep it under 5 min.
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: contracts } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install
+      - run: npm run validate
+
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      # Unit tests do not need cfgrib/eccodes; install only the light dependencies
+      - run: pip install pytest numpy pandas pyarrow scipy h3 shapely scikit-learn pydantic ortools xarray
+      - run: pytest -q tests
+
+  api:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: api } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: MOCK_MODE=1 bun test
+
+  gov:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: gov } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install
+      - run: npm test
+
+  web:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: web } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install
+      - run: npm run lint
+      - run: npm run build
+
+  infra:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: infra } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install
+      - run: npx cdk synth -c stage=dev > /dev/null

@@ -1,0 +1,18 @@
+# OWNER: Tejas | TASK: keep secrets, data and build output out of git (AC8)
+node_modules/
+dist/
+cdk.out/
+cdk.out-ts/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.local-s3/
+*.nc
+*.grib2
+*.parquet
+/models/
+.DS_Store
