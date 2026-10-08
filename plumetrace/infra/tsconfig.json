@@ -1,0 +1,13 @@
+// OWNER: Tejas | TASK: TypeScript config for the CDK app.
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": ["es2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "cdk.out-ts"
+  },
+  "include": ["bin", "lib"]
+}

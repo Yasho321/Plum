@@ -1,0 +1,22 @@
+{
+  "//": "OWNER: Tejas | TASK: AWS CDK (TypeScript) app, one file per stack in lib/. See docs/team/TEJAS.md",
+  "name": "plumetrace-infra",
+  "version": "0.1.0",
+  "private": true,
+  "bin": { "plumetrace": "bin/plumetrace.ts" },
+  "scripts": {
+    "build": "tsc",
+    "synth": "cdk synth",
+    "deploy:dev": "cdk deploy --all -c stage=dev --require-approval never"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.200.0",
+    "constructs": "^10.4.0"
+  },
+  "devDependencies": {
+    "aws-cdk": "^2.1000.0",
+    "@types/node": "^22.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.0"
+  }
+}
