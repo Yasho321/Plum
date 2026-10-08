@@ -5,5 +5,24 @@
  *   India NAQI PM2.5 bands (Good 0–30, Satisfactory 31–60, Moderate 61–90, Poor 91–120, Very Poor 121–250, Severe >250) -> colour (colour-blind checked), label.
  * DONE WHEN: -
  * GUIDE    : docs/team/TANMAY.md  |  brief: docs/PROJECT_BRIEF.md
- * STATUS   : TODO   (update to WIP / DONE in this header when you work on it)
+ * STATUS   : DONE
  */
+export const AQI_BANDS = [
+  { min: 0, max: 30, label: 'Good', color: '#50ccaa' },
+  { min: 31, max: 60, label: 'Satisfactory', color: '#a0c850' },
+  { min: 61, max: 90, label: 'Moderate', color: '#f0c800' },
+  { min: 91, max: 120, label: 'Poor', color: '#f07800' },
+  { min: 121, max: 250, label: 'Very Poor', color: '#f00000' },
+  { min: 251, max: 9999, label: 'Severe', color: '#a00000' },
+];
+
+export function getAqiBand(pm25) {
+  if (pm25 == null) return null;
+  const val = Math.round(pm25);
+  return AQI_BANDS.find(b => val >= b.min && val <= b.max) || AQI_BANDS[AQI_BANDS.length - 1];
+}
+
+export function getAqiColor(pm25) {
+  const band = getAqiBand(pm25);
+  return band ? band.color : '#888888';
+}

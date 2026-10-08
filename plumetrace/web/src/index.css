@@ -5,5 +5,46 @@
  *   Tailwind v4 + shadcn tokens; dark map-first theme; AQI colour tokens.
  * DONE WHEN: -
  * GUIDE    : docs/team/TANMAY.md  |  brief: docs/PROJECT_BRIEF.md
- * STATUS   : TODO   (update to WIP / DONE in this header when you work on it)
+ * STATUS   : DONE
  */
+@import "tailwindcss";
+
+@theme {
+  --color-aqi-good: #50ccaa;
+  --color-aqi-satisfactory: #a0c850;
+  --color-aqi-moderate: #f0c800;
+  --color-aqi-poor: #f07800;
+  --color-aqi-very-poor: #f00000;
+  --color-aqi-severe: #a00000;
+
+  --color-background: #09090b;
+  --color-foreground: #fafafa;
+  --color-card: #09090b;
+  --color-card-foreground: #fafafa;
+  --color-popover: #09090b;
+  --color-popover-foreground: #fafafa;
+  --color-primary: #fafafa;
+  --color-primary-foreground: #18181b;
+  --color-secondary: #27272a;
+  --color-secondary-foreground: #fafafa;
+  --color-muted: #27272a;
+  --color-muted-foreground: #a1a1aa;
+  --color-accent: #27272a;
+  --color-accent-foreground: #fafafa;
+  --color-destructive: #7f1d1d;
+  --color-destructive-foreground: #fafafa;
+  --color-border: #27272a;
+  --color-input: #27272a;
+  --color-ring: #d4d4d8;
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}
