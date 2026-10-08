@@ -1,9 +1,1125 @@
 {
-  "_owner": "Yasho2",
-  "_due": "D1 12:00 (FREEZE)",
-  "_task": "Replace this placeholder with a realistic mock: ~400 fire points in Punjab/Haryana with frp, acq_ts, district.",
-  "_done_when": "validate-mocks.js passes on it.",
-  "_status": "TODO",
   "type": "FeatureCollection",
-  "features": []
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.761,
+          30.1013
+        ]
+      },
+      "properties": {
+        "frp": 31.3,
+        "acq_date": "2026-10-08",
+        "acq_time": "0152",
+        "confidence": "h",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Sangrur",
+        "age_h": 24.9
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.8928,
+          30.3879
+        ]
+      },
+      "properties": {
+        "frp": 94.8,
+        "acq_date": "2026-10-09",
+        "acq_time": "0659",
+        "confidence": "h",
+        "satellite": "N",
+        "daynight": "D",
+        "district": "Sangrur",
+        "age_h": 20.9
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.9249,
+          30.3924
+        ]
+      },
+      "properties": {
+        "frp": 63,
+        "acq_date": "2026-10-08",
+        "acq_time": "1803",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "N",
+        "district": "Sangrur",
+        "age_h": 37.2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.7629,
+          30.2747
+        ]
+      },
+      "properties": {
+        "frp": 76.3,
+        "acq_date": "2026-10-08",
+        "acq_time": "0334",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "D",
+        "district": "Sangrur",
+        "age_h": 44.4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.8263,
+          30.1879
+        ]
+      },
+      "properties": {
+        "frp": 115.9,
+        "acq_date": "2026-10-09",
+        "acq_time": "1435",
+        "confidence": "h",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Sangrur",
+        "age_h": 19
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.8884,
+          30.2129
+        ]
+      },
+      "properties": {
+        "frp": 116.4,
+        "acq_date": "2026-10-09",
+        "acq_time": "1812",
+        "confidence": "h",
+        "satellite": "N",
+        "daynight": "N",
+        "district": "Sangrur",
+        "age_h": 4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.9936,
+          30.3589
+        ]
+      },
+      "properties": {
+        "frp": 72,
+        "acq_date": "2026-10-09",
+        "acq_time": "1238",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Sangrur",
+        "age_h": 6.4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.6776,
+          30.1139
+        ]
+      },
+      "properties": {
+        "frp": 77.2,
+        "acq_date": "2026-10-09",
+        "acq_time": "2311",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "D",
+        "district": "Sangrur",
+        "age_h": 11.4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.9185,
+          30.2426
+        ]
+      },
+      "properties": {
+        "frp": 82.5,
+        "acq_date": "2026-10-08",
+        "acq_time": "0138",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Sangrur",
+        "age_h": 31.8
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.818,
+          30.2965
+        ]
+      },
+      "properties": {
+        "frp": 47.4,
+        "acq_date": "2026-10-08",
+        "acq_time": "0112",
+        "confidence": "h",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Sangrur",
+        "age_h": 32
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.668,
+          30.2863
+        ]
+      },
+      "properties": {
+        "frp": 61.2,
+        "acq_date": "2026-10-08",
+        "acq_time": "2150",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Sangrur",
+        "age_h": 27
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.8514,
+          30.3094
+        ]
+      },
+      "properties": {
+        "frp": 91.7,
+        "acq_date": "2026-10-08",
+        "acq_time": "0938",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "N",
+        "district": "Sangrur",
+        "age_h": 25.4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.9883,
+          30.102
+        ]
+      },
+      "properties": {
+        "frp": 70.7,
+        "acq_date": "2026-10-09",
+        "acq_time": "0556",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Sangrur",
+        "age_h": 17.8
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.8638,
+          30.2696
+        ]
+      },
+      "properties": {
+        "frp": 75.7,
+        "acq_date": "2026-10-09",
+        "acq_time": "1249",
+        "confidence": "h",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Sangrur",
+        "age_h": 16.8
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.7555,
+          30.3467
+        ]
+      },
+      "properties": {
+        "frp": 108.9,
+        "acq_date": "2026-10-09",
+        "acq_time": "0222",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Sangrur",
+        "age_h": 15
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.7812,
+          30.401
+        ]
+      },
+      "properties": {
+        "frp": 99.6,
+        "acq_date": "2026-10-09",
+        "acq_time": "2038",
+        "confidence": "h",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Sangrur",
+        "age_h": 3.3
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.9812,
+          30.2657
+        ]
+      },
+      "properties": {
+        "frp": 25.7,
+        "acq_date": "2026-10-08",
+        "acq_time": "1624",
+        "confidence": "h",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Sangrur",
+        "age_h": 28.4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.7516,
+          30.3087
+        ]
+      },
+      "properties": {
+        "frp": 101,
+        "acq_date": "2026-10-09",
+        "acq_time": "0214",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "N",
+        "district": "Sangrur",
+        "age_h": 6.9
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.3681,
+          30.4889
+        ]
+      },
+      "properties": {
+        "frp": 14.6,
+        "acq_date": "2026-10-09",
+        "acq_time": "0031",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Patiala",
+        "age_h": 19.9
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.5518,
+          30.3721
+        ]
+      },
+      "properties": {
+        "frp": 14.5,
+        "acq_date": "2026-10-08",
+        "acq_time": "0640",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "N",
+        "district": "Patiala",
+        "age_h": 35
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.4536,
+          30.441
+        ]
+      },
+      "properties": {
+        "frp": 31.9,
+        "acq_date": "2026-10-09",
+        "acq_time": "1113",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Patiala",
+        "age_h": 5.3
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.3156,
+          30.4939
+        ]
+      },
+      "properties": {
+        "frp": 54.8,
+        "acq_date": "2026-10-08",
+        "acq_time": "2253",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "N",
+        "district": "Patiala",
+        "age_h": 45.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.5227,
+          30.3533
+        ]
+      },
+      "properties": {
+        "frp": 25.1,
+        "acq_date": "2026-10-08",
+        "acq_time": "1821",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Patiala",
+        "age_h": 25
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.4681,
+          30.2678
+        ]
+      },
+      "properties": {
+        "frp": 58.2,
+        "acq_date": "2026-10-08",
+        "acq_time": "0136",
+        "confidence": "h",
+        "satellite": "N",
+        "daynight": "D",
+        "district": "Patiala",
+        "age_h": 41.7
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.3572,
+          30.1945
+        ]
+      },
+      "properties": {
+        "frp": 115.7,
+        "acq_date": "2026-10-09",
+        "acq_time": "1038",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Patiala",
+        "age_h": 11
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.3547,
+          30.3335
+        ]
+      },
+      "properties": {
+        "frp": 55.3,
+        "acq_date": "2026-10-08",
+        "acq_time": "1924",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Patiala",
+        "age_h": 45.2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.5391,
+          30.468
+        ]
+      },
+      "properties": {
+        "frp": 110.3,
+        "acq_date": "2026-10-09",
+        "acq_time": "1353",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "D",
+        "district": "Patiala",
+        "age_h": 5.5
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.3296,
+          30.4015
+        ]
+      },
+      "properties": {
+        "frp": 31.7,
+        "acq_date": "2026-10-09",
+        "acq_time": "0657",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "N",
+        "district": "Patiala",
+        "age_h": 6.4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.5311,
+          30.2762
+        ]
+      },
+      "properties": {
+        "frp": 8.3,
+        "acq_date": "2026-10-08",
+        "acq_time": "1921",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Patiala",
+        "age_h": 25.5
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.4762,
+          30.4974
+        ]
+      },
+      "properties": {
+        "frp": 12.6,
+        "acq_date": "2026-10-08",
+        "acq_time": "0203",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Patiala",
+        "age_h": 26.3
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.8196,
+          30.3037
+        ]
+      },
+      "properties": {
+        "frp": 110.5,
+        "acq_date": "2026-10-08",
+        "acq_time": "0036",
+        "confidence": "h",
+        "satellite": "N",
+        "daynight": "N",
+        "district": "Bathinda",
+        "age_h": 32.2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.9199,
+          30.1203
+        ]
+      },
+      "properties": {
+        "frp": 38.3,
+        "acq_date": "2026-10-08",
+        "acq_time": "1645",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Bathinda",
+        "age_h": 44.5
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.8762,
+          30.2449
+        ]
+      },
+      "properties": {
+        "frp": 62.4,
+        "acq_date": "2026-10-08",
+        "acq_time": "0415",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "N",
+        "district": "Bathinda",
+        "age_h": 43.4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.9742,
+          30.0851
+        ]
+      },
+      "properties": {
+        "frp": 109.9,
+        "acq_date": "2026-10-08",
+        "acq_time": "1504",
+        "confidence": "h",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Bathinda",
+        "age_h": 26
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.9554,
+          30.0363
+        ]
+      },
+      "properties": {
+        "frp": 77.4,
+        "acq_date": "2026-10-09",
+        "acq_time": "2100",
+        "confidence": "h",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Bathinda",
+        "age_h": 12.8
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.7982,
+          30.2481
+        ]
+      },
+      "properties": {
+        "frp": 80.2,
+        "acq_date": "2026-10-08",
+        "acq_time": "0643",
+        "confidence": "h",
+        "satellite": "N",
+        "daynight": "N",
+        "district": "Bathinda",
+        "age_h": 43.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.954,
+          30.1814
+        ]
+      },
+      "properties": {
+        "frp": 76.6,
+        "acq_date": "2026-10-08",
+        "acq_time": "0746",
+        "confidence": "h",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Bathinda",
+        "age_h": 34
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.7866,
+          30.1948
+        ]
+      },
+      "properties": {
+        "frp": 33.8,
+        "acq_date": "2026-10-08",
+        "acq_time": "2240",
+        "confidence": "h",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Bathinda",
+        "age_h": 41.1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.6927,
+          30.388
+        ]
+      },
+      "properties": {
+        "frp": 94.5,
+        "acq_date": "2026-10-08",
+        "acq_time": "1923",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Barnala",
+        "age_h": 36.7
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.6489,
+          30.2077
+        ]
+      },
+      "properties": {
+        "frp": 7.7,
+        "acq_date": "2026-10-09",
+        "acq_time": "1310",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "D",
+        "district": "Barnala",
+        "age_h": 9
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.6888,
+          30.2706
+        ]
+      },
+      "properties": {
+        "frp": 21.8,
+        "acq_date": "2026-10-08",
+        "acq_time": "0147",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "N",
+        "district": "Barnala",
+        "age_h": 37.2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.4991,
+          30.4224
+        ]
+      },
+      "properties": {
+        "frp": 60.1,
+        "acq_date": "2026-10-09",
+        "acq_time": "2202",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Barnala",
+        "age_h": 4.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.6118,
+          30.4984
+        ]
+      },
+      "properties": {
+        "frp": 54.8,
+        "acq_date": "2026-10-08",
+        "acq_time": "0926",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Barnala",
+        "age_h": 25.8
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.4989,
+          30.3589
+        ]
+      },
+      "properties": {
+        "frp": 60.7,
+        "acq_date": "2026-10-09",
+        "acq_time": "0523",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Barnala",
+        "age_h": 7.5
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.2923,
+          30.6938
+        ]
+      },
+      "properties": {
+        "frp": 33.3,
+        "acq_date": "2026-10-09",
+        "acq_time": "2058",
+        "confidence": "h",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Moga",
+        "age_h": 4.1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.006,
+          30.6931
+        ]
+      },
+      "properties": {
+        "frp": 108.1,
+        "acq_date": "2026-10-08",
+        "acq_time": "2232",
+        "confidence": "h",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Moga",
+        "age_h": 36.4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.3218,
+          30.6994
+        ]
+      },
+      "properties": {
+        "frp": 118.2,
+        "acq_date": "2026-10-08",
+        "acq_time": "1705",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Moga",
+        "age_h": 40.3
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.2522,
+          30.9838
+        ]
+      },
+      "properties": {
+        "frp": 42.5,
+        "acq_date": "2026-10-08",
+        "acq_time": "1742",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "N",
+        "district": "Moga",
+        "age_h": 45.9
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.4913,
+          30.9352
+        ]
+      },
+      "properties": {
+        "frp": 82,
+        "acq_date": "2026-10-09",
+        "acq_time": "1017",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "N",
+        "district": "Ferozepur",
+        "age_h": 22.7
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.5803,
+          30.9521
+        ]
+      },
+      "properties": {
+        "frp": 71.3,
+        "acq_date": "2026-10-09",
+        "acq_time": "1524",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Ferozepur",
+        "age_h": 6.1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.654,
+          30.8443
+        ]
+      },
+      "properties": {
+        "frp": 82.4,
+        "acq_date": "2026-10-08",
+        "acq_time": "0409",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "N",
+        "district": "Ferozepur",
+        "age_h": 45.3
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.5771,
+          29.387
+        ]
+      },
+      "properties": {
+        "frp": 25.4,
+        "acq_date": "2026-10-09",
+        "acq_time": "0456",
+        "confidence": "n",
+        "satellite": "N",
+        "daynight": "D",
+        "district": "Fatehabad",
+        "age_h": 5.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.5734,
+          29.3662
+        ]
+      },
+      "properties": {
+        "frp": 84.9,
+        "acq_date": "2026-10-09",
+        "acq_time": "0236",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Fatehabad",
+        "age_h": 5.2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.3437,
+          29.6947
+        ]
+      },
+      "properties": {
+        "frp": 47,
+        "acq_date": "2026-10-08",
+        "acq_time": "1651",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Fatehabad",
+        "age_h": 38
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.499,
+          29.7086
+        ]
+      },
+      "properties": {
+        "frp": 103.1,
+        "acq_date": "2026-10-09",
+        "acq_time": "1639",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "D",
+        "district": "Kaithal",
+        "age_h": 3.7
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.5353,
+          29.9157
+        ]
+      },
+      "properties": {
+        "frp": 60.8,
+        "acq_date": "2026-10-08",
+        "acq_time": "1722",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "N",
+        "district": "Kaithal",
+        "age_h": 34
+      }
+    }
+  ]
 }

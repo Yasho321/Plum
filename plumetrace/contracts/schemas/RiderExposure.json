@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "rider_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "home_h3": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{15,16}$"
+    },
+    "shift_hours": {
+      "type": "number",
+      "minimum": 0
+    },
+    "budget_ug": {
+      "type": "number",
+      "minimum": 0
+    },
+    "forecast_dose_ug": {
+      "type": "number",
+      "minimum": 0
+    },
+    "forecast_dose_pct": {
+      "type": "number",
+      "minimum": 0
+    },
+    "actual_dose_ug": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "actual_dose_pct": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "over_budget": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "rider_id",
+    "name",
+    "home_h3",
+    "shift_hours",
+    "budget_ug",
+    "forecast_dose_ug",
+    "forecast_dose_pct",
+    "actual_dose_ug",
+    "actual_dose_pct",
+    "over_budget"
+  ],
+  "additionalProperties": false
+}

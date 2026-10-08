@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "pk": {
+      "type": "string",
+      "pattern": "^o#"
+    },
+    "sk": {
+      "type": "string",
+      "pattern": "^d#"
+    },
+    "minutes": {
+      "type": "number",
+      "minimum": 0
+    },
+    "km": {
+      "type": "number",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "pk",
+    "sk",
+    "minutes",
+    "km"
+  ],
+  "additionalProperties": false
+}

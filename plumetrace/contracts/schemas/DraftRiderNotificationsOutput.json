@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "action_id": {
+      "type": "string"
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rider_id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "rider_id",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "action_id",
+    "messages"
+  ],
+  "additionalProperties": false
+}

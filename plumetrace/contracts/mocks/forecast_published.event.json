@@ -1,7 +1,79 @@
 {
-  "_owner": "Yasho2",
-  "_due": "D1 12:00 (FREEZE)",
-  "_task": "Replace this placeholder with a realistic mock: full EventBridge envelope for forecast.published (§8.3).",
-  "_done_when": "validate-mocks.js passes on it.",
-  "_status": "TODO"
+  "source": "plumetrace.engine",
+  "detail-type": "forecast.published",
+  "id": "0e9a7c6b-5d4e-4f3a-9b2c-1a2b3c4d5e6f",
+  "account": "123456789012",
+  "time": "2026-10-09T04:10:00Z",
+  "region": "us-east-1",
+  "resources": [],
+  "version": "0",
+  "detail": {
+    "run_id": "2026-10-09T00Z",
+    "issued_at": "2026-10-09T04:10Z",
+    "max_pm25": 310,
+    "peak_window_utc": [
+      "2026-10-10T00:30Z",
+      "2026-10-10T04:30Z"
+    ],
+    "delhi_fire_share_p50": 0.31,
+    "hotspot_districts": [
+      {
+        "district": "Sangrur",
+        "share": 0.12
+      },
+      {
+        "district": "Patiala",
+        "share": 0.07
+      },
+      {
+        "district": "Bathinda",
+        "share": 0.05
+      }
+    ],
+    "hotspot_villages": [
+      {
+        "name": "Longowal",
+        "district": "Sangrur",
+        "h3": "873d16d1effffff",
+        "lat": 30.17,
+        "lon": 75.68,
+        "fire_count": 18
+      },
+      {
+        "name": "Dirba",
+        "district": "Sangrur",
+        "h3": "873d16ce2ffffff",
+        "lat": 30.07,
+        "lon": 75.94,
+        "fire_count": 14
+      },
+      {
+        "name": "Nabha",
+        "district": "Patiala",
+        "h3": "873d168d0ffffff",
+        "lat": 30.37,
+        "lon": 76.15,
+        "fire_count": 11
+      },
+      {
+        "name": "Samana",
+        "district": "Patiala",
+        "h3": "873d161abffffff",
+        "lat": 30.15,
+        "lon": 76.19,
+        "fire_count": 9
+      },
+      {
+        "name": "Tapa",
+        "district": "Barnala",
+        "h3": "8742496b3ffffff",
+        "lat": 30.29,
+        "lon": 75.46,
+        "fire_count": 7
+      }
+    ],
+    "degraded": [],
+    "summary_s3": "s3://plumetrace-123456789012-us-east-1/outputs/run=2026-10-09T00Z/summary.json",
+    "model_version": "lgbm-2026-10-09a"
+  }
 }

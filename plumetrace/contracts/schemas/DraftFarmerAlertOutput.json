@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "action_id": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    },
+    "audio_url": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "action_id",
+    "text",
+    "audio_url"
+  ],
+  "additionalProperties": false
+}

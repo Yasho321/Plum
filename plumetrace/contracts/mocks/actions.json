@@ -1,7 +1,82 @@
 {
-  "_owner": "Yasho2",
-  "_due": "D1 12:00 (FREEZE)",
-  "_task": "Replace this placeholder with a realistic mock: ActionList: one draft of each type (district_report, farmer_alert, shift_plan, rider_notify).",
-  "_done_when": "validate-mocks.js passes on it.",
-  "_status": "TODO"
+  "count": 4,
+  "actions": [
+    {
+      "pk": "action#a1f0c3d2-1111-4a11-8a11-000000000001",
+      "action_id": "a1f0c3d2-1111-4a11-8a11-000000000001",
+      "type": "district_report",
+      "status": "draft",
+      "payload": {
+        "district": "Sangrur",
+        "date": "2026-10-09",
+        "preview_url": "https://example.invalid/reports/a1f0c3d2-1111-4a11-8a11-000000000001.html"
+      },
+      "created_by": "agent",
+      "approved_by": null,
+      "run_id": "2026-10-09T00Z",
+      "created_at": "2026-10-09T04:15:00Z",
+      "updated_at": "2026-10-09T04:15:00Z"
+    },
+    {
+      "pk": "action#b2e1d4c3-2222-4b22-8b22-000000000002",
+      "action_id": "b2e1d4c3-2222-4b22-8b22-000000000002",
+      "type": "farmer_alert",
+      "status": "draft",
+      "payload": {
+        "districts": [
+          "Sangrur",
+          "Patiala"
+        ],
+        "language": "pa",
+        "max_villages": 5,
+        "text": "ਆਉਣ ਵਾਲੇ 2 ਦਿਨ ਧੂੰਆਂ ਵਧੇਗਾ। ਨੇੜਲਾ CRM ਮਸ਼ੀਨ ਕੇਂਦਰ 6 ਕਿ.ਮੀ. ਹੈ। ਸਬਸਿਡੀ ਹੈਲਪਲਾਈਨ 1800-180-1551। ਪਰਾਲੀ ਨੂੰ ਖੇਤ ਵਿੱਚ ਮਿਲਾਓ।",
+        "audio_url": "https://example.invalid/audio/b2e1d4c3-2222-4b22-8b22-000000000002.mp3"
+      },
+      "created_by": "agent",
+      "approved_by": null,
+      "run_id": "2026-10-09T00Z",
+      "created_at": "2026-10-09T04:15:00Z",
+      "updated_at": "2026-10-09T04:15:00Z"
+    },
+    {
+      "pk": "action#c3d2e5b4-3333-4c33-8c33-000000000003",
+      "action_id": "c3d2e5b4-3333-4c33-8c33-000000000003",
+      "type": "shift_plan",
+      "status": "draft",
+      "payload": {
+        "fleet_id": "fleet_demo",
+        "date": "2026-10-10",
+        "riders_changed": 8,
+        "dose_reduction_pct": {
+          "fleet_total": 18.5,
+          "worst_rider": 34
+        },
+        "extra_minutes": {
+          "average": 6,
+          "total": 48
+        },
+        "solver": "cpsat"
+      },
+      "created_by": "agent",
+      "approved_by": null,
+      "run_id": "2026-10-09T00Z",
+      "created_at": "2026-10-09T04:15:00Z",
+      "updated_at": "2026-10-09T04:15:00Z"
+    },
+    {
+      "pk": "action#d4c3f6a5-4444-4d44-8d44-000000000004",
+      "action_id": "d4c3f6a5-4444-4d44-8d44-000000000004",
+      "type": "rider_notify",
+      "status": "draft",
+      "payload": {
+        "plan_action_id": "c3d2e5b4-3333-4c33-8c33-000000000003",
+        "messages_count": 8
+      },
+      "created_by": "agent",
+      "approved_by": null,
+      "run_id": "2026-10-09T00Z",
+      "created_at": "2026-10-09T04:15:00Z",
+      "updated_at": "2026-10-09T04:15:00Z"
+    }
+  ]
 }

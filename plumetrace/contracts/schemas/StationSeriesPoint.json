@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "valid_hour": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}Z$"
+    },
+    "lead_h": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 72
+    },
+    "pm25_p10": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 2000
+    },
+    "pm25_p50": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 2000
+    },
+    "pm25_p90": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 2000
+    },
+    "fire_share_p10": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "fire_share_p50": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "fire_share_p90": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "obs_pm25": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2000
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "valid_hour",
+    "lead_h",
+    "pm25_p10",
+    "pm25_p50",
+    "pm25_p90",
+    "fire_share_p10",
+    "fire_share_p50",
+    "fire_share_p90",
+    "obs_pm25"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "tool_call"
+    },
+    "tool_use_id": {
+      "type": "string"
+    },
+    "tool_name": {
+      "type": "string"
+    },
+    "input": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    }
+  },
+  "required": [
+    "type",
+    "tool_use_id",
+    "tool_name",
+    "input"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "text"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "tool_call"
+        },
+        "tool_use_id": {
+          "type": "string"
+        },
+        "tool_name": {
+          "type": "string"
+        },
+        "input": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {}
+        }
+      },
+      "required": [
+        "type",
+        "tool_use_id",
+        "tool_name",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "tool_result"
+        },
+        "tool_use_id": {
+          "type": "string"
+        },
+        "tool_name": {
+          "type": "string"
+        },
+        "output": {}
+      },
+      "required": [
+        "type",
+        "tool_use_id",
+        "tool_name",
+        "output"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "action_drafted"
+        },
+        "action_id": {
+          "type": "string"
+        },
+        "action_type": {
+          "type": "string",
+          "enum": [
+            "district_report",
+            "farmer_alert",
+            "shift_plan",
+            "rider_notify"
+          ]
+        },
+        "preview_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "action_id",
+        "action_type"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "done"
+        },
+        "stop_reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "stop_reason"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "error"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "message"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

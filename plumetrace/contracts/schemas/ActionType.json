@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "string",
+  "enum": [
+    "district_report",
+    "farmer_alert",
+    "shift_plan",
+    "rider_notify"
+  ]
+}

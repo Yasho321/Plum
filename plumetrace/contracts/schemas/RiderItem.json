@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "pk": {
+      "type": "string",
+      "pattern": "^rider#"
+    },
+    "rider_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "home_h3": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{15,16}$"
+    },
+    "vehicle": {
+      "type": "string",
+      "const": "2w"
+    },
+    "dose_budget_ug": {
+      "type": "number",
+      "minimum": 0
+    },
+    "consent_health": {
+      "type": "boolean"
+    },
+    "consent_ts": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "Z$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "pk",
+    "rider_id",
+    "name",
+    "home_h3",
+    "vehicle",
+    "dose_budget_ug",
+    "consent_health",
+    "consent_ts"
+  ],
+  "additionalProperties": false
+}

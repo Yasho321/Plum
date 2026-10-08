@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "source": {
+      "type": "string",
+      "enum": [
+        "plumetrace.agent",
+        "plumetrace.verify"
+      ]
+    },
+    "detail-type": {
+      "type": "string",
+      "enum": [
+        "action.approved",
+        "action.executed",
+        "verification.completed"
+      ]
+    },
+    "detail": {
+      "type": "object",
+      "properties": {
+        "pk": {
+          "type": "string",
+          "pattern": "^action#"
+        },
+        "action_id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "district_report",
+            "farmer_alert",
+            "shift_plan",
+            "rider_notify"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "approved",
+            "executed",
+            "rejected",
+            "failed"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {}
+        },
+        "created_by": {
+          "type": "string",
+          "const": "agent"
+        },
+        "approved_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "pattern": "Z$"
+        },
+        "updated_at": {
+          "type": "string",
+          "pattern": "Z$"
+        },
+        "verification": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "checked_at": {
+                  "type": "string",
+                  "pattern": "Z$"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "metrics": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                }
+              },
+              "required": [
+                "checked_at",
+                "summary"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "pk",
+        "action_id",
+        "type",
+        "status",
+        "payload",
+        "created_by",
+        "approved_by",
+        "run_id",
+        "created_at",
+        "updated_at"
+      ],
+      "additionalProperties": false
+    },
+    "id": {
+      "type": "string"
+    },
+    "account": {
+      "type": "string"
+    },
+    "time": {
+      "type": "string",
+      "pattern": "Z$"
+    },
+    "region": {
+      "type": "string"
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "version": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "source",
+    "detail-type",
+    "detail"
+  ],
+  "additionalProperties": false
+}
