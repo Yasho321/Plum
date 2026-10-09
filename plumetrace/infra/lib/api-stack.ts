@@ -131,12 +131,17 @@ export class ApiStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(60),
       environment: {
         // Names here MUST match api/src/libs/env.js (documented in api/.env.example).
-        // Bun on Lambda: the filesystem is read-only except /tmp. Redirect Bun's
-        // writes (transpiler cache + home) to /tmp, or it crashes at init with
-        // "bun is unable to write files: EROFS" and every route returns 500.
+        // Bun on Lambda: the filesystem is read-only except /tmp. Redirect every
+        // Bun write (home, temp, AND the runtime transpiler cache) to /tmp, or it
+        // crashes with "bun is unable to write files: EROFS" and the route 500s.
+        // NOTE: the transpiler cache value MUST be a writable directory. Setting it
+        // to "0" does NOT disable the cache on this Bun version — Bun treats "0" as a
+        // relative path and tries to write it under the read-only /var/task, so cold
+        // starts kept crashing. Point it at /tmp (writable, 512 MB ephemeral) instead.
         HOME: "/tmp",
         TMPDIR: "/tmp",
-        BUN_RUNTIME_TRANSPILER_CACHE_PATH: "0",
+        BUN_RUNTIME_TRANSPILER_CACHE_PATH: "/tmp/bun-transpiler-cache",
+        BUN_INSTALL: "/tmp/.bun",
         NODE_ENV: "production",
         PT_STAGE: props.stage,
         MOCK_MODE: props.stage === "dev" ? "1" : "0",
