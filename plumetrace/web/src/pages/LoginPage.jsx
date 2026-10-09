@@ -9,6 +9,7 @@
  */
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Wind } from 'lucide-react';
 import { handleLogin, checkAuthSession } from '../lib/auth';
 import { useAuthStore } from '../stores/authStore';
 
@@ -25,16 +26,20 @@ export default function LoginPage() {
   if (tokens) return null;
 
   return (
-    <div className="flex h-screen items-center justify-center bg-muted/50">
-      <div className="w-full max-w-sm p-8 bg-card border border-border rounded-lg shadow-lg text-center">
-        <h1 className="text-2xl font-bold mb-2">PlumeTrace</h1>
-        <p className="text-muted-foreground mb-6 text-sm">Sign in to continue</p>
-        <button 
+    <div className="flex h-screen items-center justify-center p-6">
+      <div className="w-full max-w-sm pt-card p-8 text-center pt-fade-in">
+        <div className="mx-auto grid place-items-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg shadow-primary/30 mb-5">
+          <Wind size={26} strokeWidth={2.5} />
+        </div>
+        <h1 className="text-2xl font-extrabold tracking-tight">Plume<span className="text-primary">Trace</span></h1>
+        <p className="text-muted-foreground mt-1.5 mb-7 text-sm">Source-attributed PM2.5 forecasting<br />for Delhi-NCR</p>
+        <button
           onClick={handleLogin}
-          className="w-full py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors font-medium shadow-sm"
+          className="w-full py-2.5 bg-primary text-primary-foreground rounded-md hover:brightness-110 transition font-semibold shadow-lg shadow-primary/20"
         >
           Sign in with Cognito
         </button>
+        <p className="text-[11px] text-muted-foreground mt-4">Secured by Amazon Cognito · gov · fleet · admin roles</p>
       </div>
     </div>
   );

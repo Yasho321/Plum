@@ -36,8 +36,6 @@ const DEFAULT_STYLE = {
   ],
 };
 
-const DEBUG = import.meta.env.DEV;
-
 export default function PlumeMap({ districtData, fireData }) {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
@@ -46,7 +44,6 @@ export default function PlumeMap({ districtData, fireData }) {
   const validHour = getValidHour();
 
   const [currentTime, setCurrentTime] = useState(0);
-  const [status, setStatus] = useState('init');
 
   const { data: latestRun } = useLatestRun();
   const currentRunId = runId || latestRun?.run_id;
@@ -64,7 +61,6 @@ export default function PlumeMap({ districtData, fireData }) {
       map = new maplibregl.Map({ container: mapContainer.current, style, center: [76.9, 28.6], zoom: 6.4, attributionControl: false });
     } catch (e) {
       console.error('[PlumeMap] map construct failed', e);
-      setStatus('map-construct-error: ' + (e?.message || e));
       return;
     }
     mapRef.current = map;
@@ -72,13 +68,13 @@ export default function PlumeMap({ districtData, fireData }) {
     const overlay = new MapboxOverlay({
       interleaved: false,
       layers: [],
-      onError: (err) => { console.error('[PlumeMap] deck error', err); setStatus('deck-error: ' + (err?.message || err)); },
+      onError: (err) => console.error('[PlumeMap] deck error', err),
     });
     overlayRef.current = overlay;
     map.addControl(overlay);
 
-    map.on('load', () => { map.resize(); setStatus('ready'); console.log('[PlumeMap] map loaded', mapContainer.current?.clientWidth, '×', mapContainer.current?.clientHeight); });
-    map.on('error', (e) => { console.error('[PlumeMap] map error', e?.error || e); setStatus('map-error: ' + (e?.error?.message || 'see console')); });
+    map.on('load', () => map.resize());
+    map.on('error', (e) => console.error('[PlumeMap] map error', e?.error || e));
 
     const ro = new ResizeObserver(() => map.resize());
     ro.observe(mapContainer.current);
@@ -106,20 +102,9 @@ export default function PlumeMap({ districtData, fireData }) {
     overlayRef.current.setProps({ layers });
   }, [forecastData, districtData, fireData, firesData, trajectoriesData, currentTime]);
 
-  const cells = forecastData?.features?.length ?? 0;
-  const traj = trajectoriesData?.features?.length ?? 0;
-  const fires = (fireData || firesData)?.features?.length ?? 0;
-
   return (
     <div className="absolute inset-0">
       <div ref={mapContainer} className="w-full h-full" style={{ background: '#0a0c11' }} />
-      {DEBUG && (
-        <div className="absolute top-4 left-4 z-10 pt-glass rounded-lg px-3 py-2 text-[11px] font-mono leading-relaxed pointer-events-none">
-          <div>map: <span className={status === 'ready' ? 'text-success' : 'text-destructive'}>{status}</span></div>
-          <div>run: {currentRunId || '—'} · vh: {validHour ? validHour.slice(11) : '—'}</div>
-          <div>cells: {cells} · traj: {traj} · fires: {fires}</div>
-        </div>
-      )}
     </div>
   );
 }
