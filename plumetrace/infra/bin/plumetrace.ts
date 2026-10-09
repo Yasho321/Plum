@@ -16,7 +16,6 @@ import { assertStage, REGION } from "../lib/config";
 import { DataStack } from "../lib/data-stack";
 import { EngineStack } from "../lib/engine-stack";
 import { ApiStack } from "../lib/api-stack";
-import { AgentStack } from "../lib/agent-stack";
 import { GovStack } from "../lib/gov-stack";
 import { FleetStack } from "../lib/fleet-stack";
 import { WebStack } from "../lib/web-stack";
@@ -36,23 +35,20 @@ const engine = new EngineStack(app, `PtEngine-${stage}`, { stage, env, data });
 const gov = new GovStack(app, `PtGov-${stage}`, { stage, env, data, busName: engine.bus.eventBusName });
 const fleet = new FleetStack(app, `PtFleet-${stage}`, { stage, env, data, busName: engine.bus.eventBusName });
 
-// AgentStack (Yasho2): Bedrock guardrail + IAM policy for the Copilot.
-const bedrockModelId = app.node.tryGetContext("bedrockModelId") as string;
-const agent = new AgentStack(app, `PtAgent-${stage}`, { stage, env, modelId: bedrockModelId });
+// Copilot runs on the Anthropic API directly (Option A) — no Bedrock/AgentStack.
+// The API Lambda reads the key from Secrets Manager (grant in ApiStack).
+const anthropicModel = (app.node.tryGetContext("anthropicModel") as string) ?? "claude-sonnet-4-6";
 
 const api = new ApiStack(app, `PtApi-${stage}`, {
   stage,
   env,
   data,
   busName: engine.bus.eventBusName,
-  modelId: bedrockModelId,
-  guardrailId: agent.guardrailId,
-  guardrailVersion: agent.guardrailVersion,
-  agentPolicy: agent.bedrockAccessPolicy,
+  modelId: anthropicModel,
 });
 const web = new WebStack(app, `PtWeb-${stage}`, { stage, env });
 const observability = new ObservabilityStack(app, `PtObs-${stage}`, { stage, env, engine });
 
-void [gov, fleet, agent, api, web, observability];
+void [gov, fleet, api, web, observability];
 
 app.synth();

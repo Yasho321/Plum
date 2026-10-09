@@ -70,6 +70,8 @@ export const SECRET_NAMES = {
   openaqKey: "plumetrace/openaq_key",
   telegram: "plumetrace/telegram",
   cdse: "plumetrace/cdse",
+  // Anthropic Copilot key (Option A — direct Anthropic API; see docs/DECISIONS.md).
+  anthropicKey: "plumetrace/anthropic_key",
 } as const;
 
 /**

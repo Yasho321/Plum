@@ -47,6 +47,19 @@ export function toToolConfig() {
 }
 
 /**
+ * Anthropic Messages API tool definitions (Option A). Same registry, same zod
+ * JSON Schema — just the `{ name, description, input_schema }` shape the
+ * Anthropic SDK expects. `runTool` still validates every input with zod.
+ */
+export function toAnthropicTools() {
+  return Object.entries(registry).map(([name, t]) => ({
+    name,
+    description: t.description,
+    input_schema: z.toJSONSchema(t.input, { target: 'draft-2020-12' }),
+  }));
+}
+
+/**
  * Validate input with the contract schema, run the tool, validate output.
  * Returns { output, actionType, actionId } so the loop can emit events.
  */

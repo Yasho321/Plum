@@ -15,11 +15,11 @@ import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as cognito from "aws-cdk-lib/aws-cognito";
 import * as lambda from "aws-cdk-lib/aws-lambda";
-import * as iam from "aws-cdk-lib/aws-iam";
 import { HttpApi, HttpMethod, CorsHttpMethod } from "aws-cdk-lib/aws-apigatewayv2";
 import { HttpJwtAuthorizer } from "aws-cdk-lib/aws-apigatewayv2-authorizers";
 import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
-import { appConfig, Stage, TableKey } from "./config";
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
+import { appConfig, SECRET_NAMES, Stage, TableKey } from "./config";
 import type { DataStack } from "./data-stack";
 
 const REPO_ROOT = path.join(__dirname, "..", "..");
@@ -43,13 +43,8 @@ export interface ApiStackProps extends cdk.StackProps {
   busName?: string;
   /** Web origin(s) allowed to call the API and used as Cognito callback URLs. */
   webOrigins?: string[];
-  /** Bedrock guardrail id + version from AgentStack (Yasho2), passed through to the API. */
-  guardrailId?: string;
-  guardrailVersion?: string;
-  /** Bedrock model/inference-profile id (cdk.json context bedrockModelId). */
+  /** Anthropic model id for the Copilot (Option A). Default claude-sonnet-4-6. */
   modelId?: string;
-  /** AgentStack's managed policy granting bedrock InvokeModel + ApplyGuardrail. */
-  agentPolicy?: iam.IManagedPolicy;
   /** ARNs of Khare/Yasho2 tool Lambdas the agent may invoke. */
   toolLambdaArns?: Record<string, string>;
 }
@@ -64,6 +59,15 @@ export class ApiStack extends cdk.Stack {
     const cfg = appConfig(props.stage, this.account);
     const { data } = props;
     const webOrigins = props.webOrigins ?? ["http://localhost:5173"];
+
+    // Anthropic Copilot key (Option A). The secret is created once out-of-band
+    // (see docs/DEPLOY.md); CDK only references it and grants the API read.
+    const anthropicSecret = secretsmanager.Secret.fromSecretNameV2(
+      this,
+      "AnthropicSecret",
+      SECRET_NAMES.anthropicKey,
+    );
+    const anthropicModel = props.modelId ?? "claude-sonnet-4-6";
 
     // --- Cognito ------------------------------------------------------------
     this.userPool = new cognito.UserPool(this, "UserPool", {
@@ -126,16 +130,16 @@ export class ApiStack extends cdk.Stack {
         COGNITO_POOL_ID: this.userPool.userPoolId,
         COGNITO_CLIENT_ID: this.userPoolClient.userPoolClientId,
         ...Object.fromEntries(Object.entries(cfg.tables).map(([k, v]) => [TABLE_ENV[k as TableKey], v])),
-        ...(props.modelId ? { BEDROCK_MODEL_ID: props.modelId } : {}),
-        ...(props.guardrailId ? { GUARDRAIL_ID: props.guardrailId } : {}),
-        ...(props.guardrailVersion ? { GUARDRAIL_VERSION: props.guardrailVersion } : {}),
+        // Anthropic Copilot (Option A): the Lambda reads the key from Secrets Manager.
+        ANTHROPIC_SECRET_NAME: SECRET_NAMES.anthropicKey,
+        ANTHROPIC_MODEL: anthropicModel,
         ...(props.toolLambdaArns ?? {}),
       },
     });
     data.bucket.grantReadWrite(apiFn);
     for (const t of Object.values(data.tables)) t.grantReadWriteData(apiFn);
-    // Let the API call Bedrock + apply the guardrail (AgentStack's managed policy).
-    if (props.agentPolicy && apiFn.role) apiFn.role.addManagedPolicy(props.agentPolicy);
+    // Let the API read the Anthropic key at cold start (least privilege — AC8).
+    anthropicSecret.grantRead(apiFn);
 
     // A Function URL with response streaming for SSE (/agent/chat) — see YASHO2 §7.
     const streamingUrl = apiFn.addFunctionUrl({
