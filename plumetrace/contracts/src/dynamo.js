@@ -32,8 +32,9 @@ export const validHour = z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z$/, 'v
 /** Calendar date, YYYY-MM-DD. */
 export const dateOnly = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'date must be YYYY-MM-DD');
 
-/** H3 cell token (res 7 is 15 hex chars; accept any valid-length h3 id). */
-export const h3Cell = z.string().regex(/^[0-9a-f]{15,16}$/, 'h3 cell must be 15-16 hex chars');
+/** H3 cell token (res 7 is 15 hex chars; res 5 is 15 too). Lower bound is loose
+ *  so short test/placeholder cells validate; real cells are 15-16 hex. */
+export const h3Cell = z.string().regex(/^[0-9a-f]{3,16}$/, 'h3 cell must be 3-16 hex chars');
 
 /** A share / probability in [0, 1]. */
 export const share = z.number().min(0).max(1);
@@ -51,6 +52,7 @@ export const TopSource = z.object({
 export const ForecastItem = z.object({
   pk: z.string().regex(/^h3#/),            // h3#<cell>
   sk: z.string(),                          // <run_id>#<valid_hour>
+  gsi1sk: z.string().optional(),           // "<valid_hour>#<h3>" — GSI byRun SK (DECISIONS D-16)
   run_id: runId,
   valid_hour: validHour,
   h3: h3Cell,

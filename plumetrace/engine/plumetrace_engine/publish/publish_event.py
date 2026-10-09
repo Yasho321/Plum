@@ -31,8 +31,10 @@ def _bus_name(stage: str) -> str:
 
 def _summary_s3_uri(run_id: str) -> str:
     key = s3io.key_outputs_summary(run_id)
-    bucket = os.environ.get("PT_BUCKET")
-    return f"s3://{bucket}/{key}" if bucket else key
+    # Always an s3:// URI (contract ForecastPublishedDetail.summary_s3). Offline
+    # (no PT_BUCKET) use a placeholder bucket so the event still validates.
+    bucket = os.environ.get("PT_BUCKET") or "plumetrace-local"
+    return f"s3://{bucket}/{key}"
 
 
 def build_detail(summary: dict, run_id: str, degraded: list[str] | None = None) -> dict:

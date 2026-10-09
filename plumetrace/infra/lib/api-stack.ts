@@ -15,14 +15,27 @@ import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as cognito from "aws-cdk-lib/aws-cognito";
 import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as iam from "aws-cdk-lib/aws-iam";
 import { HttpApi, HttpMethod, CorsHttpMethod } from "aws-cdk-lib/aws-apigatewayv2";
 import { HttpJwtAuthorizer } from "aws-cdk-lib/aws-apigatewayv2-authorizers";
 import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
-import { appConfig, Stage } from "./config";
+import { appConfig, Stage, TableKey } from "./config";
 import type { DataStack } from "./data-stack";
 
 const REPO_ROOT = path.join(__dirname, "..", "..");
 const GROUPS = ["gov", "fleet", "admin"] as const;
+
+/** Map logical table keys -> the env var names the API (api/src/libs/env.js) reads. */
+const TABLE_ENV: Record<TableKey, string> = {
+  Forecast: "TABLE_FORECAST",
+  StationForecast: "TABLE_STATION_FORECAST",
+  Attribution: "TABLE_ATTRIBUTION",
+  Actions: "TABLE_ACTIONS",
+  Riders: "TABLE_RIDERS",
+  RiderHealth: "TABLE_RIDER_HEALTH",
+  Shifts: "TABLE_SHIFTS",
+  RouteCache: "TABLE_ROUTE_CACHE",
+};
 
 export interface ApiStackProps extends cdk.StackProps {
   stage: Stage;
@@ -33,6 +46,10 @@ export interface ApiStackProps extends cdk.StackProps {
   /** Bedrock guardrail id + version from AgentStack (Yasho2), passed through to the API. */
   guardrailId?: string;
   guardrailVersion?: string;
+  /** Bedrock model/inference-profile id (cdk.json context bedrockModelId). */
+  modelId?: string;
+  /** AgentStack's managed policy granting bedrock InvokeModel + ApplyGuardrail. */
+  agentPolicy?: iam.IManagedPolicy;
   /** ARNs of Khare/Yasho2 tool Lambdas the agent may invoke. */
   toolLambdaArns?: Record<string, string>;
 }
@@ -99,20 +116,26 @@ export class ApiStack extends cdk.Stack {
       memorySize: 1024,
       timeout: cdk.Duration.seconds(30),
       environment: {
+        // Names here MUST match api/src/libs/env.js (documented in api/.env.example).
+        NODE_ENV: "production",
         PT_STAGE: props.stage,
         MOCK_MODE: props.stage === "dev" ? "1" : "0",
-        PT_BUCKET: data.bucket.bucketName,
-        PT_EVENT_BUS: props.busName ?? cfg.busName,
-        USER_POOL_ID: this.userPool.userPoolId,
-        USER_POOL_CLIENT_ID: this.userPoolClient.userPoolClientId,
-        ...Object.fromEntries(Object.entries(cfg.tables).map(([k, v]) => [`PT_TABLE_${k.toUpperCase()}`, v])),
-        ...(props.guardrailId ? { BEDROCK_GUARDRAIL_ID: props.guardrailId } : {}),
-        ...(props.guardrailVersion ? { BEDROCK_GUARDRAIL_VERSION: props.guardrailVersion } : {}),
+        CORS_ORIGINS: webOrigins.join(","),
+        BUCKET: data.bucket.bucketName,
+        BUS_NAME: props.busName ?? cfg.busName,
+        COGNITO_POOL_ID: this.userPool.userPoolId,
+        COGNITO_CLIENT_ID: this.userPoolClient.userPoolClientId,
+        ...Object.fromEntries(Object.entries(cfg.tables).map(([k, v]) => [TABLE_ENV[k as TableKey], v])),
+        ...(props.modelId ? { BEDROCK_MODEL_ID: props.modelId } : {}),
+        ...(props.guardrailId ? { GUARDRAIL_ID: props.guardrailId } : {}),
+        ...(props.guardrailVersion ? { GUARDRAIL_VERSION: props.guardrailVersion } : {}),
         ...(props.toolLambdaArns ?? {}),
       },
     });
     data.bucket.grantReadWrite(apiFn);
     for (const t of Object.values(data.tables)) t.grantReadWriteData(apiFn);
+    // Let the API call Bedrock + apply the guardrail (AgentStack's managed policy).
+    if (props.agentPolicy && apiFn.role) apiFn.role.addManagedPolicy(props.agentPolicy);
 
     // A Function URL with response streaming for SSE (/agent/chat) — see YASHO2 §7.
     const streamingUrl = apiFn.addFunctionUrl({

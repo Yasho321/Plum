@@ -78,14 +78,30 @@ def _validate(item: dict, kind: str) -> None:
 # --- Item builders ------------------------------------------------------------
 
 def build_forecast_item(cell: str, run_id: str, valid_hour: str, lead_h: int, **attrs: Any) -> dict:
+    """Build a contract-complete ForecastItem (brief §8.1, DECISIONS D-16).
+
+    Fills every frozen field with a sensible default so the item validates even
+    when only pm25 is supplied; callers (gridding) override via **attrs. Sets the
+    GSI byRun sort key `gsi1sk = "<valid_hour>#<h3>"`.
+    """
     item = {
         "pk": forecast_pk(cell),
         "sk": forecast_sk(run_id, valid_hour),
+        "gsi1sk": f"{valid_hour}#{cell}",
         "run_id": run_id,
         "valid_hour": valid_hour,
+        "h3": cell,
+        "pm25": None,
+        "pm25_p10": None,
+        "pm25_p90": None,
+        "fire_share": None,
+        "fire_share_p10": None,
+        "fire_share_p90": None,
+        "top_sources": [],
+        "hpbl_m": None,
         "lead_h": lead_h,
         "ttl": ttl_in(7),
-        **attrs,
+        **attrs,  # caller-supplied values win
     }
     _validate(item, "ForecastItem")
     return item

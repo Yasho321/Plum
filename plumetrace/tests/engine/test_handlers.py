@@ -43,10 +43,12 @@ def test_unknown_handler_raises():
         handlers.dispatch("nope", {})
 
 
-def test_science_handler_reports_pending_not_crash():
-    # Yasho1's modules aren't implemented yet; the handler must stay runnable.
+def test_science_handler_stays_runnable():
+    # Yasho1's forecast module now runs; offline (no feature data) it returns an
+    # empty result rather than crashing. Either way the state must stay runnable
+    # and never raise, and the envelope must be preserved.
     out = handlers.dispatch("forecast", {"run_id": "2026-10-09T00Z"})
-    assert out["forecast"]["status"] == "pending"
+    assert isinstance(out["forecast"], dict)
     assert out["degraded"] == []
 
 

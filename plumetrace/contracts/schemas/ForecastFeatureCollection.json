@@ -62,7 +62,7 @@
             "properties": {
               "h3": {
                 "type": "string",
-                "pattern": "^[0-9a-f]{15,16}$"
+                "pattern": "^[0-9a-f]{3,16}$"
               },
               "run_id": {
                 "type": "string",

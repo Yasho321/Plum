@@ -59,19 +59,22 @@ class ConcLookup:
                 )
                 vals = []
                 for item in response.get('Items', []):
-                    # sk: <run_id>#<valid_hour> -> wait, GSI byRun has PK run_id, SK valid_hour#h3
-                    sk = item.get('sk', '')
-                    if '#' in sk:
-                        parts = sk.split('#')
-                        if len(parts) >= 2:
-                            hour_utc = parts[0]
-                            cell = parts[1]
-                            pm25 = item.get('pm25')
-                            if pm25 is not None:
-                                if hour_utc not in self.data:
-                                    self.data[hour_utc] = {}
-                                self.data[hour_utc][cell] = float(pm25)
-                                vals.append(float(pm25))
+                    # Read the ForecastItem contract attributes directly (DECISIONS D-16):
+                    # the base sk is <run_id>#<valid_hour>; the "<valid_hour>#<h3>"
+                    # composite lives in gsi1sk, so never parse sk for hour/cell.
+                    hour_utc = item.get('valid_hour')
+                    cell = item.get('h3')
+                    if not hour_utc or not cell:
+                        # fall back to splitting gsi1sk ("<valid_hour>#<h3>") if present
+                        gsi1sk = item.get('gsi1sk', '')
+                        if '#' in gsi1sk:
+                            hour_utc, cell = gsi1sk.split('#', 1)
+                    pm25 = item.get('pm25')
+                    if hour_utc and cell and pm25 is not None:
+                        if hour_utc not in self.data:
+                            self.data[hour_utc] = {}
+                        self.data[hour_utc][cell] = float(pm25)
+                        vals.append(float(pm25))
                 if vals:
                     self.mean_pm25 = sum(vals) / len(vals)
             except Exception as e:

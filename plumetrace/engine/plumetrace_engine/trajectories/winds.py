@@ -129,6 +129,37 @@ class WindField:
 
 
 # --------------------------------------------------------------------------
+# Real GFS loader: stack the per-hour NetCDF files written by Tejas's
+# ingest/gfs.py (raw/gfs/run=<run_id>/f<FFF>.nc, brief §6.3/§8.2) into one
+# time-indexed WindField. Handoff #18: the trajectories handler calls this.
+# --------------------------------------------------------------------------
+def build_wind_field(run_id: str, fff_hours: Sequence[int] | None = None, config: Config = CONFIG) -> WindField:
+    """Load the GFS run's hourly NetCDF files into a single WindField.
+
+    Reads raw/gfs/run=<run_id>/f000..f072.nc (hourly by default, D-08), skipping
+    any that are missing, and concatenates along time. Raises FileNotFoundError
+    if none are present (e.g. offline before ingest has run) so the caller can
+    mark the run degraded rather than crash.
+    """
+    from plumetrace_engine.common import s3io
+
+    hours = list(fff_hours) if fff_hours is not None else list(range(0, 73))
+    parts = []
+    for fff in hours:
+        key = s3io.key_raw_gfs(run_id, fff)
+        if not s3io.exists(key):
+            continue
+        ds = s3io.open_netcdf(key)
+        if "time" not in ds.dims:  # single-hour file may store time as a scalar coord
+            ds = ds.expand_dims("time")
+        parts.append(ds)
+    if not parts:
+        raise FileNotFoundError(f"No GFS NetCDF for run {run_id} (raw/gfs/run={run_id}/f*.nc)")
+    stacked = xr.concat(parts, dim="time").sortby("time")
+    return WindField(stacked, config=config)
+
+
+# --------------------------------------------------------------------------
 # Test/synthetic helper: build a WindField with a spatially-uniform, constant-
 # in-time wind. Used by tests (constant-wind trajectory) and for local dev
 # before Tejas's real GFS NetCDF lands (playbook §4 "while waiting").

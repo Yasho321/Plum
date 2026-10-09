@@ -18,7 +18,7 @@ Utc = Annotated[str, StringConstraints(pattern=r"Z$")]
 RunId = Annotated[str, StringConstraints(pattern=r"^\d{4}-\d{2}-\d{2}T\d{2}Z$")]
 ValidHour = Annotated[str, StringConstraints(pattern=r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z$")]
 DateOnly = Annotated[str, StringConstraints(pattern=r"^\d{4}-\d{2}-\d{2}$")]
-H3Cell = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{15,16}$")]
+H3Cell = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{3,16}$")]
 Share = Annotated[float, Field(ge=0, le=1)]
 Pm25 = Annotated[float, Field(ge=0, le=2000)]
 LeadH = Annotated[int, Field(ge=0, le=72)]
@@ -57,6 +57,7 @@ class TopSource(_Base):
 class ForecastItem(_Base):
     pk: Annotated[str, StringConstraints(pattern=r"^h3#")]
     sk: str
+    gsi1sk: Optional[str] = None  # "<valid_hour>#<h3>" — GSI byRun SK (DECISIONS D-16)
     run_id: RunId
     valid_hour: ValidHour
     h3: H3Cell

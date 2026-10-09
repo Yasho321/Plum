@@ -4,4 +4,21 @@
 #   Engine requirements + matplotlib, sagemaker (optional), tqdm.
 # DONE WHEN: -
 # GUIDE    : docs/team/YASHO1.md  |  brief: docs/PROJECT_BRIEF.md
-# STATUS   : TODO   (update to WIP / DONE in this header when you work on it)
+# STATUS   : DONE
+#
+# Install the engine deps too (training reuses plumetrace_engine features/s3io):
+#   pip install -r engine/requirements.txt -r training/requirements.txt
+lightgbm
+pandas
+numpy
+pyarrow
+scikit-learn
+scipy
+h3>=4
+shapely
+boto3
+pydantic>=2
+matplotlib
+tqdm
+# Optional: only needed to launch a managed SageMaker training job (training/sagemaker_job.py --sagemaker)
+# sagemaker>=2.200

@@ -4,6 +4,7 @@
   "context": {
     "stage": "dev",
     "region": "us-east-1",
-    "bedrockModelId": "VERIFY-in-console: latest Claude inference profile enabled in us-east-1"
+    "//bedrockModelId": "VERIFY the exact id in the Bedrock console (Model access) for us-east-1; often an inference profile (us.anthropic...).",
+    "bedrockModelId": "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
   }
 }
