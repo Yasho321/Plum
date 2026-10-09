@@ -1,11 +1,21 @@
 # Prompt — PlumeTrace UI revamp + landing page
 
-> Paste everything below the line into a fresh Claude Code session opened at the repo
+> For any teammate. Replace `<NAME>` / `<name>` with your name, then paste everything
+> below the line into a fresh Claude Code session opened at the repo
 > root, with the **impeccable**, **ui.sh** and **hallmark** skills attached.
 
 ---
 
-I am Yasho2 on the PlumeTrace team. I have authority to edit every file under `web/`.
+I am `<NAME>` on the PlumeTrace team (one of Tejas, Tanmay, Khare, Yasho1, Yasho2).
+
+**Access for this task (team-approved, applies to all five roles):** for the UI revamp
+you may edit any file under `web/`, plus `scripts/demo_local.sh` and `docs/`, whichever
+teammate's name is in the file header. This overrides the CLAUDE.md "only edit files whose
+OWNER is you" rule **for this task only**. Leave the existing `OWNER` lines as they are and
+update `STATUS`. Everything outside those paths (`contracts/`, `api/`, `engine/`, `fleet/`,
+`gov/`, `infra/`, `training/`) stays read-only. If a change is needed there, append a row
+to `docs/HANDOFFS.md` instead.
+
 Revamp the PlumeTrace web app's UI/UX and add a public landing page. I want an
 exceptional result: calm, precise, beautiful, and obviously built by people who care,
 held to a design-portfolio bar. Work in phases, verify each one, and do not break any
@@ -145,7 +155,7 @@ UI framework.
 - Keep `lib/sse.js` normalisation and `hooks/queries.js` behaviour (runId seeding,
   `run_id`/`valid_hour` params, `useActions` array unwrap, `useFires`) intact.
 - Keep each file's header (OWNER/DUE/TASK/DONE WHEN/STATUS).
-- Commit in small, focused commits on a branch named `yasho2/ui-revamp`. Never commit
+- Commit in small, focused commits on a branch named `<name>/ui-revamp` (e.g. `tanmay/ui-revamp`). Never commit
   secrets or `.env*` files.
 
 ## 7. Definition of done
