@@ -15,7 +15,27 @@ import { useTimeStore } from '../../stores/timeStore';
 import { useLatestRun, useForecast, useTrajectories, useFires } from '../../hooks/queries';
 import { createFiresLayer, createTripsLayer, createH3Layer, createDistrictsLayer } from './layers';
 
-const DEFAULT_STYLE = 'https://demotiles.maplibre.org/style.json';
+// A self-contained dark raster style (CARTO dark basemap, no API key) so the map
+// always renders locally. In prod, VITE_LOCATION_STYLE_URL points at Amazon Location.
+const DEFAULT_STYLE = {
+  version: 8,
+  sources: {
+    carto: {
+      type: 'raster',
+      tiles: [
+        'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+        'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+        'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+      ],
+      tileSize: 256,
+      attribution: '© OpenStreetMap, © CARTO',
+    },
+  },
+  layers: [
+    { id: 'bg', type: 'background', paint: { 'background-color': '#0a0c11' } },
+    { id: 'carto', type: 'raster', source: 'carto', paint: { 'raster-opacity': 0.9 } },
+  ],
+};
 
 export default function PlumeMap({ districtData, fireData }) {
   const mapContainer = useRef(null);

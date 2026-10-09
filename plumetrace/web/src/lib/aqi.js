@@ -8,12 +8,12 @@
  * STATUS   : DONE
  */
 export const AQI_BANDS = [
-  { min: 0, max: 30, label: 'Good', color: '#50ccaa' },
-  { min: 31, max: 60, label: 'Satisfactory', color: '#a0c850' },
-  { min: 61, max: 90, label: 'Moderate', color: '#f0c800' },
-  { min: 91, max: 120, label: 'Poor', color: '#f07800' },
-  { min: 121, max: 250, label: 'Very Poor', color: '#f00000' },
-  { min: 251, max: 9999, label: 'Severe', color: '#a00000' },
+  { min: 0, max: 30, label: 'Good', color: '#4ade80' },
+  { min: 31, max: 60, label: 'Satisfactory', color: '#a3e635' },
+  { min: 61, max: 90, label: 'Moderate', color: '#facc15' },
+  { min: 91, max: 120, label: 'Poor', color: '#fb923c' },
+  { min: 121, max: 250, label: 'Very Poor', color: '#ef4444' },
+  { min: 251, max: 9999, label: 'Severe', color: '#b91c1c' },
 ];
 
 export function getAqiBand(pm25) {

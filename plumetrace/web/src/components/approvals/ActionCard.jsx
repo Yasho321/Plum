@@ -55,7 +55,7 @@ export default function ActionCard({ action }) {
   };
 
   return (
-    <div className="border border-border rounded-lg p-4 bg-card shadow-sm flex flex-col">
+    <div className="pt-card p-4 flex flex-col pt-fade-in">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-secondary text-secondary-foreground rounded-full flex-shrink-0">
@@ -80,22 +80,20 @@ export default function ActionCard({ action }) {
         </div>
         
         {action.status === 'draft' && canApprove && (
-          <div className="flex gap-2 ml-4">
-            <button 
-              onClick={handleReject} 
+          <div className="flex gap-2 ml-4 shrink-0">
+            <button
+              onClick={handleReject}
               disabled={reject.isPending || approve.isPending}
-              className="p-1.5 text-destructive hover:bg-destructive/10 rounded disabled:opacity-50 transition-colors"
-              title="Reject"
+              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-destructive bg-destructive/10 hover:bg-destructive/20 rounded-md disabled:opacity-50 transition-colors"
             >
-              <X size={18} />
+              <X size={14} /> Reject
             </button>
-            <button 
-              onClick={handleApprove} 
+            <button
+              onClick={handleApprove}
               disabled={approve.isPending || reject.isPending}
-              className="p-1.5 text-primary hover:bg-primary/10 rounded disabled:opacity-50 transition-colors"
-              title="Approve"
+              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold bg-primary text-primary-foreground hover:brightness-110 rounded-md disabled:opacity-50 transition-colors shadow-lg shadow-primary/20"
             >
-              <Check size={18} />
+              <Check size={14} /> Approve
             </button>
           </div>
         )}
