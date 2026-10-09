@@ -42,11 +42,14 @@ export const handleLogout = async () => {
 
 export const checkAuthSession = async () => {
   try {
+    // VITE_USE_MOCKS=1 -> pure client mocks. VITE_DEV_NOAUTH=1 -> hit a local
+    // MOCK_MODE API without Cognito (full-stack local demo). Both log in as admin.
     const isMock = import.meta.env.VITE_USE_MOCKS === '1';
-    if (isMock) {
+    const devNoAuth = import.meta.env.VITE_DEV_NOAUTH === '1';
+    if (isMock || devNoAuth) {
       useAuthStore.getState().login(
-        { idToken: 'mock-token' },
-        { username: 'Mock Admin' },
+        { idToken: 'dev-token' },
+        { username: isMock ? 'Mock Admin' : 'Local Admin' },
         ['admin']
       );
       return true;

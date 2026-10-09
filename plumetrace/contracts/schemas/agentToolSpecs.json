@@ -1,0 +1,265 @@
+[
+  {
+    "toolSpec": {
+      "name": "getForecastSummary",
+      "description": "Get the summary of the latest (or a given) forecast run: peak PM2.5 with p10/p90, the Delhi fire share with range, hotspot districts and villages. Use this first to understand the situation.",
+      "inputSchema": {
+        "json": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "run_id": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}Z$"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  {
+    "toolSpec": {
+      "name": "getStationForecast",
+      "description": "Get the 0-72 h PM2.5 forecast time series (p10/p50/p90) plus any actual readings for one OpenAQ station.",
+      "inputSchema": {
+        "json": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "station_id": {
+              "type": "string"
+            },
+            "run_id": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}Z$"
+            }
+          },
+          "required": [
+            "station_id"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  {
+    "toolSpec": {
+      "name": "getAttribution",
+      "description": "Get the estimated per-district crop-fire contribution shares (with p10-p90 ranges), fire counts and FRP for a date.",
+      "inputSchema": {
+        "json": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "date": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            }
+          },
+          "required": [
+            "date"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  {
+    "toolSpec": {
+      "name": "getForecastSkill",
+      "description": "Get forecast-accuracy metrics (MAE, RMSE, band coverage, skill vs persistence) by lead bucket, for backtest and live data. Use to answer \"how accurate is this?\".",
+      "inputSchema": {
+        "json": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "days": {
+              "default": 7,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30
+            }
+          },
+          "required": [
+            "days"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  {
+    "toolSpec": {
+      "name": "draftDistrictReport",
+      "description": "Draft (do NOT send) a one-page district accountability report with the fire-share estimate and range, a map, trends, supportive actions and the method. Returns an action_id for human approval.",
+      "inputSchema": {
+        "json": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "district": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            }
+          },
+          "required": [
+            "district",
+            "date"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  {
+    "toolSpec": {
+      "name": "draftFarmerAlert",
+      "description": "Draft (do NOT send) a supportive, non-blaming farmer alert (<300 chars + audio) for hotspot villages in the given districts, in Punjabi or Hindi. Returns an action_id for human approval.",
+      "inputSchema": {
+        "json": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "districts": {
+              "minItems": 1,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "language": {
+              "type": "string",
+              "enum": [
+                "pa",
+                "hi"
+              ]
+            },
+            "max_villages": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          "required": [
+            "districts",
+            "language",
+            "max_villages"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  {
+    "toolSpec": {
+      "name": "checkFireTrend",
+      "description": "Get daily fire counts and FRP for a district over the last N days, with the trend. Use for next-day/verification questions.",
+      "inputSchema": {
+        "json": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "district": {
+              "type": "string"
+            },
+            "days": {
+              "default": 7,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30
+            }
+          },
+          "required": [
+            "district",
+            "days"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  {
+    "toolSpec": {
+      "name": "getFleetExposure",
+      "description": "Get each rider's forecast exposure dose as a percentage of their safe budget for a date, and which riders are over budget. Fleet data is SIMULATED.",
+      "inputSchema": {
+        "json": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "fleet_id": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            }
+          },
+          "required": [
+            "fleet_id",
+            "date"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  {
+    "toolSpec": {
+      "name": "draftShiftPlan",
+      "description": "Draft (do NOT send) a re-planned set of shifts that caps each rider's pollution dose, reporting the dose reduction and extra-minutes trade-off. Returns an action_id for human approval.",
+      "inputSchema": {
+        "json": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "fleet_id": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            },
+            "objective": {
+              "type": "string",
+              "enum": [
+                "min_max_dose",
+                "min_total_dose"
+              ]
+            }
+          },
+          "required": [
+            "fleet_id",
+            "date"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  {
+    "toolSpec": {
+      "name": "draftRiderNotifications",
+      "description": "Draft (do NOT send) per-rider notification messages for an approved or drafted shift plan. Returns an action_id for human approval.",
+      "inputSchema": {
+        "json": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "plan_action_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "plan_action_id"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  }
+]

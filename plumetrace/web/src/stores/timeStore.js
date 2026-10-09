@@ -15,7 +15,8 @@ export const useTimeStore = create((set, get) => ({
   playing: false,
   speed: 1,
   setRunId: (runId) => set({ runId }),
-  setLeadH: (leadH) => set({ leadH }),
+  // Support both setLeadH(5) and setLeadH(prev => prev + 1) (the play loop uses the latter).
+  setLeadH: (v) => set((s) => ({ leadH: typeof v === 'function' ? v(s.leadH) : v })),
   setPlaying: (playing) => set({ playing }),
   setSpeed: (speed) => set({ speed }),
   getValidHour: () => {
@@ -25,6 +26,7 @@ export const useTimeStore = create((set, get) => ({
     if (isNaN(d.getTime())) d = new Date(runId);
     if (isNaN(d.getTime())) return null;
     d.setUTCHours(d.getUTCHours() + leadH);
-    return d.toISOString();
+    // Contract valid_hour is minute-precision with Z: "2026-10-10T02:00Z".
+    return d.toISOString().slice(0, 16) + 'Z';
   }
 }));

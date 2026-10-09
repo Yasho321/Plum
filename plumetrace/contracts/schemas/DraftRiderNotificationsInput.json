@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "plan_action_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "plan_action_id"
+  ],
+  "additionalProperties": false
+}

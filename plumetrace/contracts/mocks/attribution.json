@@ -1,7 +1,118 @@
 {
-  "_owner": "Yasho2",
-  "_due": "D1 12:00 (FREEZE)",
-  "_task": "Replace this placeholder with a realistic mock: AttributionResponse for 8 Punjab/Haryana districts with share_p10/p50/p90, fire_count, frp_sum_mw.",
-  "_done_when": "validate-mocks.js passes on it.",
-  "_status": "TODO"
+  "date": "2026-10-09",
+  "run_id": "2026-10-09T00Z",
+  "districts": [
+    {
+      "district": "Sangrur",
+      "share_p10": 0.086,
+      "share_p50": 0.12,
+      "share_p90": 0.156,
+      "fire_count": 142,
+      "frp_sum_mw": 1822.4,
+      "trend_7d": 0.34,
+      "receptor_stations": [
+        "1420",
+        "2554",
+        "8118"
+      ]
+    },
+    {
+      "district": "Patiala",
+      "share_p10": 0.05,
+      "share_p50": 0.07,
+      "share_p90": 0.091,
+      "fire_count": 96,
+      "frp_sum_mw": 1190.3,
+      "trend_7d": 0.21,
+      "receptor_stations": [
+        "1420",
+        "2554",
+        "8118"
+      ]
+    },
+    {
+      "district": "Bathinda",
+      "share_p10": 0.036,
+      "share_p50": 0.05,
+      "share_p90": 0.065,
+      "fire_count": 71,
+      "frp_sum_mw": 872.1,
+      "trend_7d": 0.12,
+      "receptor_stations": [
+        "1420",
+        "2554",
+        "8118"
+      ]
+    },
+    {
+      "district": "Barnala",
+      "share_p10": 0.029,
+      "share_p50": 0.04,
+      "share_p90": 0.052,
+      "fire_count": 58,
+      "frp_sum_mw": 649.4,
+      "trend_7d": 0.08,
+      "receptor_stations": [
+        "1420",
+        "2554",
+        "8118"
+      ]
+    },
+    {
+      "district": "Moga",
+      "share_p10": 0.022,
+      "share_p50": 0.03,
+      "share_p90": 0.039,
+      "fire_count": 41,
+      "frp_sum_mw": 459.2,
+      "trend_7d": -0.03,
+      "receptor_stations": [
+        "1420",
+        "2554",
+        "8118"
+      ]
+    },
+    {
+      "district": "Ferozepur",
+      "share_p10": 0.018,
+      "share_p50": 0.025,
+      "share_p90": 0.033,
+      "fire_count": 33,
+      "frp_sum_mw": 374.6,
+      "trend_7d": 0.05,
+      "receptor_stations": [
+        "1420",
+        "2554",
+        "8118"
+      ]
+    },
+    {
+      "district": "Fatehabad",
+      "share_p10": 0.014,
+      "share_p50": 0.02,
+      "share_p90": 0.026,
+      "fire_count": 22,
+      "frp_sum_mw": 210,
+      "trend_7d": -0.1,
+      "receptor_stations": [
+        "1420",
+        "2554",
+        "8118"
+      ]
+    },
+    {
+      "district": "Kaithal",
+      "share_p10": 0.011,
+      "share_p50": 0.015,
+      "share_p90": 0.02,
+      "fire_count": 15,
+      "frp_sum_mw": 150.2,
+      "trend_7d": 0,
+      "receptor_stations": [
+        "1420",
+        "2554",
+        "8118"
+      ]
+    }
+  ]
 }

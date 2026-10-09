@@ -1,7 +1,80 @@
 {
-  "_owner": "Yasho2",
-  "_due": "D1 12:00 (FREEZE)",
-  "_task": "Replace this placeholder with a realistic mock: SkillResponse: 4 lead buckets x {backtest, live} with mae, rmse, coverage_p10_p90, skill_vs_persistence, severe_hit_rate.",
-  "_done_when": "validate-mocks.js passes on it.",
-  "_status": "TODO"
+  "days": 7,
+  "generated_at": "2026-10-09T03:00Z",
+  "backtest": [
+    {
+      "lead_bucket": "0-6",
+      "mae": 14.2,
+      "rmse": 18.7,
+      "coverage_p10_p90": 0.79,
+      "skill_vs_persistence": 0.08,
+      "severe_hit_rate": 0.61,
+      "n": 1680
+    },
+    {
+      "lead_bucket": "6-24",
+      "mae": 22.6,
+      "rmse": 29.8,
+      "coverage_p10_p90": 0.81,
+      "skill_vs_persistence": 0.19,
+      "severe_hit_rate": 0.58,
+      "n": 4320
+    },
+    {
+      "lead_bucket": "24-48",
+      "mae": 31.4,
+      "rmse": 41.4,
+      "coverage_p10_p90": 0.83,
+      "skill_vs_persistence": 0.27,
+      "severe_hit_rate": 0.52,
+      "n": 4320
+    },
+    {
+      "lead_bucket": "48-72",
+      "mae": 38.9,
+      "rmse": 51.3,
+      "coverage_p10_p90": 0.78,
+      "skill_vs_persistence": 0.22,
+      "severe_hit_rate": 0.44,
+      "n": 4320
+    }
+  ],
+  "live": [
+    {
+      "lead_bucket": "0-6",
+      "mae": 16.8,
+      "rmse": 22.2,
+      "coverage_p10_p90": 0.74,
+      "skill_vs_persistence": 0.04,
+      "severe_hit_rate": 0.55,
+      "n": 210
+    },
+    {
+      "lead_bucket": "6-24",
+      "mae": 26.1,
+      "rmse": 34.5,
+      "coverage_p10_p90": 0.77,
+      "skill_vs_persistence": 0.14,
+      "severe_hit_rate": 0.5,
+      "n": 540
+    },
+    {
+      "lead_bucket": "24-48",
+      "mae": 35.7,
+      "rmse": 47.1,
+      "coverage_p10_p90": 0.8,
+      "skill_vs_persistence": 0.21,
+      "severe_hit_rate": 0.46,
+      "n": 540
+    },
+    {
+      "lead_bucket": "48-72",
+      "mae": 44.2,
+      "rmse": 58.3,
+      "coverage_p10_p90": 0.73,
+      "skill_vs_persistence": 0.15,
+      "severe_hit_rate": 0.38,
+      "n": 540
+    }
+  ]
 }

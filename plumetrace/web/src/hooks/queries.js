@@ -8,19 +8,26 @@
  * STATUS   : DONE
  */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api, { fetchSummary, fetchForecastH3, fetchStationForecast, fetchAttribution, fetchTrajectories, fetchSkill, fetchFleetExposure, fetchActions } from '../lib/api';
+import api, { fetchSummary, fetchForecastH3, fetchStationForecast, fetchAttribution, fetchTrajectories, fetchFires, fetchSkill, fetchFleetExposure, fetchActions } from '../lib/api';
+import { useTimeStore } from '../stores/timeStore';
 
 export function useLatestRun() {
   return useQuery({
     queryKey: ['latestRun'],
-    queryFn: async () => (await fetchSummary()).data,
+    queryFn: async () => {
+      const data = (await fetchSummary()).data;
+      // Seed the time store so getValidHour() works -> the forecast layer enables.
+      if (data?.run_id && !useTimeStore.getState().runId) useTimeStore.getState().setRunId(data.run_id);
+      return data;
+    },
   });
 }
 
 export function useForecast(runId, validHour) {
   return useQuery({
     queryKey: ['forecast', runId, validHour],
-    queryFn: async () => (await fetchForecastH3()).data,
+    // Pass run_id + valid_hour (required by the real /forecast route; ignored in MOCK_MODE).
+    queryFn: async () => (await fetchForecastH3(runId, validHour)).data,
     enabled: !!runId && !!validHour,
   });
 }
@@ -49,6 +56,14 @@ export function useTrajectories(runId, stationId) {
   });
 }
 
+export function useFires(runId) {
+  return useQuery({
+    queryKey: ['fires', runId],
+    queryFn: async () => (await fetchFires(runId)).data,
+    enabled: !!runId,
+  });
+}
+
 export function useSkill(days = 7) {
   return useQuery({
     queryKey: ['skill', days],
@@ -59,15 +74,19 @@ export function useSkill(days = 7) {
 export function useFleetExposure(fleetId, date) {
   return useQuery({
     queryKey: ['fleetExposure', fleetId, date],
-    queryFn: async () => (await fetchFleetExposure(fleetId)).data,
-    enabled: !!fleetId && !!date,
+    queryFn: async () => (await fetchFleetExposure(fleetId, date)).data,
+    enabled: !!fleetId,
   });
 }
 
 export function useActions(status = 'draft') {
   return useQuery({
     queryKey: ['actions', status],
-    queryFn: async () => (await fetchActions()).data,
+    // The API returns { count, actions }; unwrap to the array (status-filtered server-side).
+    queryFn: async () => {
+      const d = (await fetchActions(status)).data;
+      return Array.isArray(d) ? d : (d?.actions ?? []);
+    },
   });
 }
 

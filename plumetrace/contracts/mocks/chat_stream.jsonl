@@ -1,1 +1,24 @@
-{"_owner": "Yasho2", "_task": "Replace this placeholder with a realistic mock: a recorded SSE stream for 'Tomorrow morning looks severe. What should we do?' with tool_call/tool_result/action_drafted events — Tanmay builds the Copilot UI against this.", "_done_when": "validate-mocks.js passes on it."}
+{"type":"text","text":"Let me check tomorrow morning's forecast, its sources, and rider exposure.\n"}
+{"type":"tool_call","tool_use_id":"t1","tool_name":"getForecastSummary","input":{}}
+{"type":"tool_result","tool_use_id":"t1","tool_name":"getForecastSummary","output":{"run_id":"2026-10-09T00Z","max_pm25":310,"max_pm25_p10":248,"max_pm25_p90":372,"delhi_fire_share_p50":0.31,"delhi_fire_share_p10":0.22,"delhi_fire_share_p90":0.4,"peak_window_utc":["2026-10-10T00:30Z","2026-10-10T04:30Z"]}}
+{"type":"tool_call","tool_use_id":"t2","tool_name":"getAttribution","input":{"date":"2026-10-09"}}
+{"type":"tool_result","tool_use_id":"t2","tool_name":"getAttribution","output":{"districts":[{"district":"Sangrur","share_p50":0.12,"share_p10":0.086,"share_p90":0.156},{"district":"Patiala","share_p50":0.07,"share_p10":0.05,"share_p90":0.091}]}}
+{"type":"tool_call","tool_use_id":"t3","tool_name":"getFleetExposure","input":{"fleet_id":"fleet_demo","date":"2026-10-10"}}
+{"type":"tool_result","tool_use_id":"t3","tool_name":"getFleetExposure","output":{"riders_total":50,"riders_over_budget":8,"worst_rider_pct":138.5}}
+{"type":"tool_call","tool_use_id":"t4","tool_name":"getForecastSkill","input":{"days":7}}
+{"type":"tool_result","tool_use_id":"t4","tool_name":"getForecastSkill","output":{"live":[{"lead_bucket":"24-48","mae":35.7,"skill_vs_persistence":0.21,"coverage_p10_p90":0.8}]}}
+{"type":"text","text":"\nThe picture is severe. I'll draft a district report, a farmer alert, a shift plan and the rider notifications for your approval.\n"}
+{"type":"tool_call","tool_use_id":"t5","tool_name":"draftDistrictReport","input":{"district":"Sangrur","date":"2026-10-09"}}
+{"type":"tool_result","tool_use_id":"t5","tool_name":"draftDistrictReport","output":{"action_id":"a1f0c3d2-1111-4a11-8a11-000000000001","preview_url":"https://example.invalid/reports/a1f0c3d2-1111-4a11-8a11-000000000001.html"}}
+{"type":"action_drafted","action_id":"a1f0c3d2-1111-4a11-8a11-000000000001","action_type":"district_report","preview_url":"https://example.invalid/reports/a1f0c3d2-1111-4a11-8a11-000000000001.html"}
+{"type":"tool_call","tool_use_id":"t6","tool_name":"draftFarmerAlert","input":{"districts":["Sangrur","Patiala"],"language":"pa","max_villages":5}}
+{"type":"tool_result","tool_use_id":"t6","tool_name":"draftFarmerAlert","output":{"action_id":"b2e1d4c3-2222-4b22-8b22-000000000002","text":"ਆਉਣ ਵਾਲੇ 2 ਦਿਨ ਧੂੰਆਂ ਵਧੇਗਾ। ਨੇੜਲਾ CRM ਮਸ਼ੀਨ ਕੇਂਦਰ 6 ਕਿ.ਮੀ. ਹੈ। ਸਬਸਿਡੀ ਹੈਲਪਲਾਈਨ 1800-180-1551। ਪਰਾਲੀ ਨੂੰ ਖੇਤ ਵਿੱਚ ਮਿਲਾਓ।","audio_url":"https://example.invalid/audio/b2e1d4c3-2222-4b22-8b22-000000000002.mp3"}}
+{"type":"action_drafted","action_id":"b2e1d4c3-2222-4b22-8b22-000000000002","action_type":"farmer_alert"}
+{"type":"tool_call","tool_use_id":"t7","tool_name":"draftShiftPlan","input":{"fleet_id":"fleet_demo","date":"2026-10-10"}}
+{"type":"tool_result","tool_use_id":"t7","tool_name":"draftShiftPlan","output":{"action_id":"c3d2e5b4-3333-4c33-8c33-000000000003","riders_changed":8,"dose_reduction_pct":{"fleet_total":18.5,"worst_rider":34},"extra_minutes":{"average":6,"total":48},"solver":"cpsat"}}
+{"type":"action_drafted","action_id":"c3d2e5b4-3333-4c33-8c33-000000000003","action_type":"shift_plan"}
+{"type":"tool_call","tool_use_id":"t8","tool_name":"draftRiderNotifications","input":{"plan_action_id":"c3d2e5b4-3333-4c33-8c33-000000000003"}}
+{"type":"tool_result","tool_use_id":"t8","tool_name":"draftRiderNotifications","output":{"action_id":"d4c3f6a5-4444-4d44-8d44-000000000004","messages":[{"rider_id":"r001","text":"Tomorrow, 2026-10-10: your 07:00-09:00 slot moved to 11:00-13:00. Expected exposure 92% of your safe budget (was 134%). Wear an N95 between 07:00-10:00."}]}}
+{"type":"action_drafted","action_id":"d4c3f6a5-4444-4d44-8d44-000000000004","action_type":"rider_notify"}
+{"type":"text","text":"\nTomorrow morning (10 Oct, 00:30-04:30 UTC) peaks near 310 ug/m3 (248-372). Crop fires explain about 31% (22-40%) of it, led by Sangrur 12% (9-16%) and Patiala 7% (5-9%). 8 of 50 riders are over their dose budget.\n\nDrafts awaiting your approval:\n- District report for Sangrur\n- Punjabi farmer alert for Sangrur & Patiala (top 5 villages)\n- Shift plan: -34% worst-rider exposure, +6 min average\n- Rider notifications for the 8 affected riders\n\nI have not sent anything. Approve each draft to deliver it."}
+{"type":"done","stop_reason":"end_turn"}

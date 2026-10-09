@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "done"
+    },
+    "stop_reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "type",
+    "stop_reason"
+  ],
+  "additionalProperties": false
+}

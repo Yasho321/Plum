@@ -6,5 +6,9 @@
  *   Other JS packages import it as "@plumetrace/contracts" (file:../contracts).
  * DONE WHEN: `node -e "import('@plumetrace/contracts')"` works from api/ and gov/.
  * GUIDE    : docs/team/YASHO2.md  |  brief: docs/PROJECT_BRIEF.md
- * STATUS   : TODO   (update to WIP / DONE in this header when you work on it)
+ * STATUS   : DONE
  */
+export * from './dynamo.js';
+export * from './events.js';
+export * from './api.js';
+export * from './agentTools.js';

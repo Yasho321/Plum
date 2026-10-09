@@ -46,7 +46,7 @@ export default function ApprovalsPage() {
           <div className="text-muted-foreground text-center py-10">No actions found in this status.</div>
         ) : (
           filteredActions.map(action => (
-            <ActionCard key={action.id} action={action} />
+            <ActionCard key={action.action_id} action={action} />
           ))
         )}
       </div>

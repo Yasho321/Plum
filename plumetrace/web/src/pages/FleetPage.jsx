@@ -7,87 +7,79 @@
  * GUIDE    : docs/team/TANMAY.md  |  brief: docs/PROJECT_BRIEF.md
  * STATUS   : DONE
  */
-import { useLatestRun, useActions } from '../hooks/queries';
+import { Bell, Users, AlertTriangle, Gauge } from 'lucide-react';
+import { useFleetExposure } from '../hooks/queries';
 import DoseBar from '../components/DoseBar';
 import SimulatedBadge from '../components/SimulatedBadge';
 import { useCopilotStore } from '../stores/copilotStore';
 
 export default function FleetPage() {
-  const { data: runData } = useLatestRun();
-  const { data: actions = [] } = useActions('draft');
+  const { data: fleet, isLoading } = useFleetExposure('fleet_demo', '2026-10-10');
   const sendMessage = useCopilotStore(s => s.sendMessage);
 
-  const riders = runData?.riders || [];
-  
-  // Find the latest shift_plan action
-  const latestShiftPlan = Array.isArray(actions) ? actions.find(a => a.type === 'shift_plan') : null;
-  const newPlanRiders = latestShiftPlan?.payload?.after?.riders || [];
-  
-  const budget = 200; // example limit
+  const riders = fleet?.riders || [];
+  const total = fleet?.summary?.riders_total ?? riders.length;
+  const over = fleet?.summary?.riders_over_budget ?? riders.filter(r => r.over_budget).length;
+  const worst = fleet?.summary?.worst_rider_pct ?? Math.max(0, ...riders.map(r => r.forecast_dose_pct || 0));
 
-  const handleNotify = () => {
-    sendMessage("Draft notifications to riders who are over their exposure budget.");
-  };
+  const handleNotify = () => sendMessage('Draft notifications to riders who are over their exposure budget.');
+
+  const Stat = ({ icon, label, value, tone }) => (
+    <div className="pt-card p-4">
+      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">{icon}{label}</div>
+      {isLoading ? <div className="pt-skeleton h-8 w-16 mt-2" /> : <div className={`mt-1 text-3xl font-extrabold ${tone || ''}`}>{value}</div>}
+    </div>
+  );
 
   return (
-    <div className="p-6 max-w-5xl mx-auto h-full flex flex-col relative">
-      <div className="absolute top-4 right-4">
-        <SimulatedBadge />
-      </div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Fleet Exposure (Daily Budget: {budget} µg·h/m³)</h2>
-        <button 
-          onClick={handleNotify}
-          className="px-4 py-2 bg-primary text-primary-foreground text-sm rounded-md hover:bg-primary/90"
-        >
-          Notify Riders
+    <div className="p-6 max-w-5xl mx-auto h-full flex flex-col">
+      <div className="flex justify-between items-start mb-5">
+        <div>
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl font-bold">Fleet Exposure</h2>
+            <SimulatedBadge />
+          </div>
+          <p className="text-sm text-muted-foreground mt-1">Forecast rider pollution dose as a % of each rider's safe daily budget.</p>
+        </div>
+        <button onClick={handleNotify} className="flex items-center gap-1.5 px-4 py-2 bg-primary text-primary-foreground text-sm font-semibold rounded-md hover:brightness-110 transition shadow-lg shadow-primary/20">
+          <Bell size={15} /> Notify Riders
         </button>
       </div>
-      
-      <div className="flex-1 overflow-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-muted-foreground border-b border-border">
-              <th className="pb-2 font-medium">Rider ID</th>
-              <th className="pb-2 font-medium">Route</th>
-              <th className="pb-2 font-medium w-1/2">Exposure % of Budget</th>
-              <th className="pb-2 font-medium">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {riders.map(rider => {
-              const currentExposure = rider.dose_72h;
-              const proposedRider = newPlanRiders.find(r => r.rider_id === rider.id);
-              const proposedExposure = proposedRider ? proposedRider.dose_72h : undefined;
-              
-              const isOver = currentExposure > budget;
-              const willBeOver = proposedExposure !== undefined ? proposedExposure > budget : isOver;
 
-              return (
-                <tr key={rider.id} className="border-b border-border/50">
-                  <td className="py-3 font-medium">{rider.id}</td>
-                  <td className="py-3 text-muted-foreground">{rider.route_id}</td>
-                  <td className="py-3 pr-4">
-                    <DoseBar current={currentExposure} proposed={proposedExposure} limit={budget} />
-                    <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                      <span>{Math.round((currentExposure / budget) * 100)}% current</span>
-                      {proposedExposure !== undefined && (
-                        <span>{Math.round((proposedExposure / budget) * 100)}% proposed</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="py-3">
-                    {willBeOver ? (
-                      <span className="text-destructive font-medium">Over Budget</span>
-                    ) : (
-                      <span className="text-green-500 font-medium">Safe</span>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div className="grid grid-cols-3 gap-4 mb-5">
+        <Stat icon={<Users size={13} />} label="Riders" value={total} />
+        <Stat icon={<AlertTriangle size={13} />} label="Over budget" value={over} tone="text-destructive" />
+        <Stat icon={<Gauge size={13} />} label="Worst rider" value={`${Math.round(worst)}%`} tone="text-destructive" />
+      </div>
+
+      <div className="pt-card flex-1 overflow-auto">
+        <div className="grid grid-cols-[1.4fr_1fr_2fr_auto] gap-4 px-4 py-2.5 text-[11px] uppercase tracking-wide text-muted-foreground border-b border-border sticky top-0 bg-card z-10">
+          <span>Rider</span><span>Home cell</span><span>Exposure % of budget</span><span className="text-right">Status</span>
+        </div>
+        {isLoading ? (
+          [...Array(8)].map((_, i) => <div key={i} className="px-4 py-3.5"><div className="pt-skeleton h-4 w-full" /></div>)
+        ) : riders.length === 0 ? (
+          <div className="px-4 py-10 text-center text-sm text-muted-foreground">No rider exposure data.</div>
+        ) : (
+          riders.map(r => {
+            const pct = r.forecast_dose_pct;
+            return (
+              <div key={r.rider_id} className="grid grid-cols-[1.4fr_1fr_2fr_auto] gap-4 items-center px-4 py-3 border-b border-border/40 last:border-0 hover:bg-secondary/40 transition-colors">
+                <span className="font-medium text-sm truncate">{r.name || r.rider_id}</span>
+                <span className="text-xs text-muted-foreground font-mono">{r.home_h3?.slice(0, 9)}…</span>
+                <div className="flex items-center gap-3">
+                  <DoseBar current={pct} limit={100} />
+                  <span className={`text-xs tabular-nums w-12 text-right ${pct > 100 ? 'text-destructive font-semibold' : 'text-muted-foreground'}`}>{Math.round(pct)}%</span>
+                </div>
+                <div className="text-right">
+                  {r.over_budget
+                    ? <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-destructive/15 text-destructive">Over</span>
+                    : <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-success/15 text-success">Safe</span>}
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

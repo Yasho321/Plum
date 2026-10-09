@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "pk": {
+      "type": "string",
+      "pattern": "^rider#"
+    },
+    "rider_id": {
+      "type": "string"
+    },
+    "conditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "budget_multiplier": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  },
+  "required": [
+    "pk",
+    "rider_id",
+    "conditions",
+    "budget_multiplier"
+  ],
+  "additionalProperties": false
+}

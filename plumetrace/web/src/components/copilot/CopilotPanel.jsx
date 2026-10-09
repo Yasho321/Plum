@@ -12,6 +12,7 @@ import { useCopilotStore } from '../../stores/copilotStore';
 import ToolCallStep from './ToolCallStep';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
+import { Sparkles } from 'lucide-react';
 
 export default function CopilotPanel() {
   const { messages, streaming, sendMessage } = useCopilotStore();
@@ -33,22 +34,25 @@ export default function CopilotPanel() {
     <div className="flex flex-col h-full bg-background border-l border-border">
       <div className="flex-1 overflow-auto p-4 flex flex-col gap-4">
         {messages.length === 0 && (
-          <div className="text-center text-muted-foreground my-auto flex flex-col items-center">
-            <p className="mb-4">How can I help you today?</p>
-            <button 
+          <div className="text-center text-muted-foreground my-auto flex flex-col items-center gap-4 pt-fade-in">
+            <div className="grid place-items-center w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg shadow-primary/20">
+              <Sparkles size={22} />
+            </div>
+            <p className="text-sm">Ask about the forecast, draft reports, alerts, or a shift plan.</p>
+            <button
               onClick={() => sendMessage("Tomorrow morning looks severe. What should we do?")}
-              className="text-sm bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80 transition-colors max-w-xs"
+              className="text-sm pt-card px-4 py-2.5 hover:border-primary/50 hover:text-foreground transition-colors max-w-xs text-left"
             >
-              "Tomorrow morning looks severe. What should we do?"
+              💨 "Tomorrow morning looks severe. What should we do?"
             </button>
           </div>
         )}
         {messages.map((m, i) => (
-          <div key={i} className={`flex flex-col max-w-[90%] ${m.role === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'}`}>
-            <div className={`p-3 rounded-lg ${m.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
-              <ReactMarkdown className="text-sm [&>p]:mb-2 [&>ul]:list-disc [&>ul]:pl-5 [&>h3]:font-bold [&>h3]:mt-2">
-                {m.content}
-              </ReactMarkdown>
+          <div key={i} className={`flex flex-col max-w-[90%] pt-fade-in ${m.role === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'}`}>
+            <div className={`px-3.5 py-2.5 rounded-2xl ${m.role === 'user' ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground rounded-br-sm' : 'pt-card rounded-bl-sm'}`}>
+              <div className="text-sm [&>p]:mb-2 [&>ul]:list-disc [&>ul]:pl-5 [&>h3]:font-bold [&>h3]:mt-2">
+                <ReactMarkdown>{m.content || ''}</ReactMarkdown>
+              </div>
               {m.tools?.map((tool, idx) => (
                 <ToolCallStep key={idx} tool={tool} />
               ))}

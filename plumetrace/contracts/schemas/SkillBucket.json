@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "lead_bucket": {
+      "type": "string",
+      "enum": [
+        "0-6",
+        "6-24",
+        "24-48",
+        "48-72"
+      ]
+    },
+    "mae": {
+      "type": "number",
+      "minimum": 0
+    },
+    "rmse": {
+      "type": "number",
+      "minimum": 0
+    },
+    "coverage_p10_p90": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "skill_vs_persistence": {
+      "type": "number"
+    },
+    "severe_hit_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "n": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    }
+  },
+  "required": [
+    "lead_bucket",
+    "mae",
+    "rmse",
+    "coverage_p10_p90",
+    "skill_vs_persistence",
+    "severe_hit_rate",
+    "n"
+  ],
+  "additionalProperties": false
+}

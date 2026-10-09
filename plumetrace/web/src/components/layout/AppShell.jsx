@@ -8,10 +8,14 @@
  * STATUS   : DONE
  */
 import { Link, useLocation } from 'react-router-dom';
+import { Wind, Sparkles } from 'lucide-react';
 import DegradedBanner from '../DegradedBanner';
+import { useLatestRun } from '../../hooks/queries';
+import { formatIst } from '../../lib/format';
 
 export default function AppShell({ children }) {
   const loc = useLocation();
+  const { data: run } = useLatestRun();
   const tabs = [
     { name: 'Government', path: '/gov' },
     { name: 'Fleet', path: '/fleet' },
@@ -20,29 +24,49 @@ export default function AppShell({ children }) {
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-background text-foreground">
-      <header className="border-b border-border flex items-center justify-between p-4">
-        <div className="flex items-center gap-6">
-          <h1 className="text-xl font-bold">PlumeTrace</h1>
-          <nav className="flex gap-4">
-            {tabs.map(t => (
-              <Link 
-                key={t.path} 
-                to={t.path}
-                className={`text-sm font-medium ${loc.pathname === t.path ? 'text-primary' : 'text-muted-foreground'}`}
-              >
-                {t.name}
-              </Link>
-            ))}
+    <div className="flex flex-col h-screen text-foreground">
+      <header className="pt-glass sticky top-0 z-20 flex items-center justify-between px-5 h-14 border-b border-border">
+        <div className="flex items-center gap-7">
+          <Link to="/gov" className="flex items-center gap-2.5 group">
+            <span className="grid place-items-center w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg shadow-primary/20">
+              <Wind size={17} strokeWidth={2.5} />
+            </span>
+            <span className="text-[15px] font-extrabold tracking-tight">Plume<span className="text-primary">Trace</span></span>
+          </Link>
+          <nav className="flex items-center gap-1">
+            {tabs.map(t => {
+              const active = loc.pathname === t.path;
+              return (
+                <Link
+                  key={t.path}
+                  to={t.path}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                    active ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-secondary/60'
+                  }`}
+                >
+                  {t.name}
+                </Link>
+              );
+            })}
           </nav>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="text-xs text-muted-foreground">run_id: pending | IST</div>
-          <Link to="/copilot" className="px-3 py-1 bg-secondary rounded text-sm hover:bg-secondary/80 transition">Copilot</Link>
+        <div className="flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground px-2.5 py-1 rounded-full bg-secondary/60 border border-border">
+            <span className={`w-1.5 h-1.5 rounded-full ${run?.run_id ? 'bg-success animate-pulse' : 'bg-muted-foreground'}`} />
+            {run?.run_id ? (
+              <span>run <span className="text-foreground font-medium">{run.run_id}</span>{run.issued_at ? ` · ${formatIst(run.issued_at)} IST` : ''}</span>
+            ) : 'run: pending'}
+          </div>
+          <Link
+            to="/copilot"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-semibold bg-primary text-primary-foreground hover:brightness-110 transition shadow-lg shadow-primary/20"
+          >
+            <Sparkles size={15} /> Copilot
+          </Link>
         </div>
       </header>
       <DegradedBanner />
-      <main className="flex-1 overflow-auto relative">
+      <main className="flex-1 min-h-0 overflow-auto relative">
         {children}
       </main>
     </div>

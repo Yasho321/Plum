@@ -9,31 +9,41 @@
  */
 import { useState } from 'react';
 import { ComposedChart, Area, Line, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useSkill, useStation, useLatestRun } from '../hooks/queries';
 
-const mockData = Array.from({ length: 72 }, (_, i) => {
-  const t = i;
-  const actual = 100 + Math.sin(t / 5) * 30 + Math.random() * 20;
-  const p50 = 100 + Math.sin(t / 5) * 25;
-  const p10 = p50 - 20 - Math.random() * 10;
-  const p90 = p50 + 20 + Math.random() * 10;
-  return { time: t, actual, p50, p10, p90, range: [p10, p90] };
-});
+const STATION_ID = '1420'; // Anand Vihar
 
 export default function SkillPage() {
   const [mode, setMode] = useState('live');
+  const { data: skill } = useSkill(7);
+  const { data: run } = useLatestRun();
+  const { data: station } = useStation(STATION_ID, run?.run_id);
+
+  // Chart: station forecast series (p10–p90 band, median, observed).
+  const chartData = (station?.series || []).map((p) => ({
+    time: p.lead_h,
+    p50: p.pm25_p50,
+    range: [p.pm25_p10, p.pm25_p90],
+    actual: p.obs_pm25 ?? null,
+  }));
+
+  const buckets = (skill?.[mode] || []);
+
+  const pct = (x) => (x == null ? '—' : `${Math.round(x * 100)}%`);
+  const signed = (x) => (x == null ? '—' : `${x >= 0 ? '+' : ''}${Math.round(x * 100)}%`);
 
   return (
     <div className="p-6 max-w-6xl mx-auto h-full flex flex-col">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Forecast Skill</h2>
         <div className="flex gap-2 bg-muted p-1 rounded-md">
-          <button 
+          <button
             onClick={() => setMode('backtest')}
             className={`px-3 py-1 text-sm rounded transition-colors ${mode === 'backtest' ? 'bg-background shadow-sm font-medium' : 'text-muted-foreground hover:text-foreground'}`}
           >
             Backtest
           </button>
-          <button 
+          <button
             onClick={() => setMode('live')}
             className={`px-3 py-1 text-sm rounded transition-colors ${mode === 'live' ? 'bg-background shadow-sm font-medium' : 'text-muted-foreground hover:text-foreground'}`}
           >
@@ -41,17 +51,17 @@ export default function SkillPage() {
           </button>
         </div>
       </div>
-      
+
       <p className="text-sm text-muted-foreground mb-6 bg-muted/50 p-2 rounded inline-block self-start border border-border">
         Caveat: {mode === 'backtest' ? 'Backtest uses reanalysis weather (optimistic)' : 'Live uses GFS forecasts'}.
       </p>
 
       <div className="bg-card border border-border p-4 rounded-lg shadow-sm mb-6 h-[400px]">
-        <h3 className="font-semibold mb-4">Station Forecast vs Actual (PM2.5)</h3>
+        <h3 className="font-semibold mb-4">Station Forecast vs Actual — {station?.station_name || STATION_ID} (PM2.5)</h3>
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={mockData}>
+          <ComposedChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.2} />
-            <XAxis dataKey="time" />
+            <XAxis dataKey="time" label={{ value: 'Lead (h)', position: 'insideBottom', offset: -4 }} />
             <YAxis />
             <Tooltip />
             <Legend />
@@ -63,7 +73,7 @@ export default function SkillPage() {
       </div>
 
       <div className="bg-card border border-border p-4 rounded-lg shadow-sm">
-        <h3 className="font-semibold mb-4">Metrics by Lead Time</h3>
+        <h3 className="font-semibold mb-4">Metrics by Lead Time ({mode})</h3>
         <table className="w-full text-sm text-left">
           <thead>
             <tr className="border-b border-border text-muted-foreground">
@@ -76,30 +86,20 @@ export default function SkillPage() {
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b border-border/50">
-              <td className="py-2">0-24h</td>
-              <td className="py-2">12.4</td>
-              <td className="py-2">15.2</td>
-              <td className="py-2">82%</td>
-              <td className="py-2 text-green-500">+15%</td>
-              <td className="py-2">89%</td>
-            </tr>
-            <tr className="border-b border-border/50">
-              <td className="py-2">24-48h</td>
-              <td className="py-2">18.1</td>
-              <td className="py-2">22.4</td>
-              <td className="py-2">78%</td>
-              <td className="py-2 text-green-500">+22%</td>
-              <td className="py-2">81%</td>
-            </tr>
-            <tr>
-              <td className="py-2">48-72h</td>
-              <td className="py-2">24.5</td>
-              <td className="py-2">31.0</td>
-              <td className="py-2">75%</td>
-              <td className="py-2 text-green-500">+28%</td>
-              <td className="py-2">74%</td>
-            </tr>
+            {buckets.length === 0 ? (
+              <tr><td colSpan={6} className="py-4 text-muted-foreground text-center">No skill data yet.</td></tr>
+            ) : (
+              buckets.map((b) => (
+                <tr key={b.lead_bucket} className="border-b border-border/50">
+                  <td className="py-2">{b.lead_bucket}h</td>
+                  <td className="py-2">{b.mae}</td>
+                  <td className="py-2">{b.rmse}</td>
+                  <td className="py-2">{pct(b.coverage_p10_p90)}</td>
+                  <td className={`py-2 ${b.skill_vs_persistence >= 0 ? 'text-green-500' : 'text-destructive'}`}>{signed(b.skill_vs_persistence)}</td>
+                  <td className="py-2">{pct(b.severe_hit_rate)}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

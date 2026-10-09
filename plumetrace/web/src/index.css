@@ -7,44 +7,95 @@
  * GUIDE    : docs/team/TANMAY.md  |  brief: docs/PROJECT_BRIEF.md
  * STATUS   : DONE
  */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-aqi-good: #50ccaa;
-  --color-aqi-satisfactory: #a0c850;
-  --color-aqi-moderate: #f0c800;
-  --color-aqi-poor: #f07800;
-  --color-aqi-very-poor: #f00000;
-  --color-aqi-severe: #a00000;
+  /* India NAQI PM2.5 bands (ordinal severity ramp) */
+  --color-aqi-good: #4ade80;
+  --color-aqi-satisfactory: #a3e635;
+  --color-aqi-moderate: #facc15;
+  --color-aqi-poor: #fb923c;
+  --color-aqi-very-poor: #ef4444;
+  --color-aqi-severe: #b91c1c;
 
-  --color-background: #09090b;
-  --color-foreground: #fafafa;
-  --color-card: #09090b;
-  --color-card-foreground: #fafafa;
-  --color-popover: #09090b;
-  --color-popover-foreground: #fafafa;
-  --color-primary: #fafafa;
-  --color-primary-foreground: #18181b;
-  --color-secondary: #27272a;
-  --color-secondary-foreground: #fafafa;
-  --color-muted: #27272a;
-  --color-muted-foreground: #a1a1aa;
-  --color-accent: #27272a;
-  --color-accent-foreground: #fafafa;
-  --color-destructive: #7f1d1d;
-  --color-destructive-foreground: #fafafa;
-  --color-border: #27272a;
-  --color-input: #27272a;
-  --color-ring: #d4d4d8;
-  --radius: 0.5rem;
+  /* Surfaces — deep blue-black with a touch of elevation on cards */
+  --color-background: #0a0c11;
+  --color-foreground: #e7eaf0;
+  --color-card: #121622;
+  --color-card-foreground: #e7eaf0;
+  --color-popover: #121622;
+  --color-popover-foreground: #e7eaf0;
+
+  /* Brand — a clean sky/cyan that reads as "air" */
+  --color-primary: #38bdf8;
+  --color-primary-foreground: #041019;
+  --color-secondary: #1a2130;
+  --color-secondary-foreground: #e7eaf0;
+  --color-muted: #161c28;
+  --color-muted-foreground: #8b94a7;
+  --color-accent: #22d3ee;
+  --color-accent-foreground: #04131a;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #fef2f2;
+  --color-success: #34d399;
+
+  --color-border: #222a3a;
+  --color-input: #222a3a;
+  --color-ring: #38bdf8;
+  --radius: 0.65rem;
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
 @layer base {
   * {
     border-color: var(--color-border);
   }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
   body {
-    background-color: var(--color-background);
+    font-family: var(--font-sans);
     color: var(--color-foreground);
+    background-color: var(--color-background);
+    /* subtle aurora so large dark panels never feel flat */
+    background-image:
+      radial-gradient(60rem 40rem at 85% -10%, rgba(56, 189, 248, 0.08), transparent 60%),
+      radial-gradient(50rem 40rem at -10% 110%, rgba(34, 211, 238, 0.06), transparent 55%);
+    background-attachment: fixed;
+  }
+
+  /* Quiet, modern scrollbars */
+  * { scrollbar-width: thin; scrollbar-color: #2a3346 transparent; }
+  *::-webkit-scrollbar { width: 9px; height: 9px; }
+  *::-webkit-scrollbar-thumb { background: #2a3346; border-radius: 9999px; border: 2px solid transparent; background-clip: content-box; }
+  *::-webkit-scrollbar-thumb:hover { background: #3a4660; background-clip: content-box; }
+
+  :focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+  h1, h2, h3 { letter-spacing: -0.01em; }
+}
+
+/* Reusable surface + motion helpers used across the app */
+@layer components {
+  .pt-card {
+    background-color: color-mix(in oklab, var(--color-card) 92%, white 2%);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: 0 1px 0 0 rgba(255,255,255,0.03) inset, 0 8px 24px -16px rgba(0,0,0,0.8);
+  }
+  .pt-glass {
+    background: rgba(18, 22, 34, 0.72);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--color-border);
+  }
+  @keyframes pt-fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .pt-fade-in { animation: pt-fade-in 0.35s ease both; }
+  @keyframes pt-shimmer { 100% { transform: translateX(100%); } }
+  .pt-skeleton {
+    position: relative; overflow: hidden; background: var(--color-muted); border-radius: 0.4rem;
+  }
+  .pt-skeleton::after {
+    content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    animation: pt-shimmer 1.4s infinite;
   }
 }

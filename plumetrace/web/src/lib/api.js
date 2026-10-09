@@ -40,6 +40,7 @@ const getMockData = async (url) => {
   if (url.includes('/stations/')) return (await import('../../../contracts/mocks/station_forecast.json')).default;
   if (url.includes('/attribution')) return (await import('../../../contracts/mocks/attribution.json')).default;
   if (url.includes('/trajectories')) return JSON.parse((await import('../../../contracts/mocks/trajectories.geojson?raw')).default);
+  if (url.includes('/fires')) return JSON.parse((await import('../../../contracts/mocks/fires_48h.geojson?raw')).default);
   if (url.includes('/skill')) return (await import('../../../contracts/mocks/skill.json')).default;
   if (url.includes('/fleet/')) return (await import('../../../contracts/mocks/fleet_exposure.json')).default;
   if (url.includes('/actions')) return (await import('../../../contracts/mocks/actions.json')).default;
@@ -57,10 +58,17 @@ const api = USE_MOCKS
 export default api;
 
 export const fetchSummary = () => api.get('/runs/latest');
-export const fetchForecastH3 = () => api.get('/forecast');
-export const fetchStationForecast = (id) => api.get(`/stations/${id}`);
+export const fetchForecastH3 = (runId, validHour) => {
+  const p = new URLSearchParams();
+  if (runId) p.set('run_id', runId);
+  if (validHour) p.set('valid_hour', validHour);
+  const qs = p.toString();
+  return api.get(`/forecast${qs ? `?${qs}` : ''}`);
+};
+export const fetchStationForecast = (id) => api.get(`/stations/${id}/forecast`);
 export const fetchAttribution = () => api.get('/attribution');
 export const fetchTrajectories = () => api.get('/trajectories');
+export const fetchFires = (runId) => api.get(`/fires${runId ? `?run_id=${runId}` : ''}`);
 export const fetchSkill = () => api.get('/skill');
-export const fetchFleetExposure = (id) => api.get(`/fleet/${id}`);
-export const fetchActions = () => api.get('/actions');
+export const fetchFleetExposure = (id, date) => api.get(`/fleet/${id}/exposure${date ? `?date=${date}` : ''}`);
+export const fetchActions = (status) => api.get(`/actions${status ? `?status=${status}` : ''}`);

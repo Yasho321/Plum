@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "Feature"
+    },
+    "geometry": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "Point"
+        },
+        "coordinates": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        }
+      },
+      "required": [
+        "type",
+        "coordinates"
+      ],
+      "additionalProperties": false
+    },
+    "properties": {
+      "type": "object",
+      "properties": {
+        "frp": {
+          "type": "number",
+          "minimum": 0
+        },
+        "acq_date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "acq_time": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "n",
+            "h"
+          ]
+        },
+        "satellite": {
+          "type": "string"
+        },
+        "daynight": {
+          "type": "string",
+          "enum": [
+            "D",
+            "N"
+          ]
+        },
+        "district": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "age_h": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "frp",
+        "acq_date",
+        "acq_time",
+        "confidence",
+        "satellite",
+        "daynight",
+        "district",
+        "age_h"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "type",
+    "geometry",
+    "properties"
+  ],
+  "additionalProperties": false
+}
