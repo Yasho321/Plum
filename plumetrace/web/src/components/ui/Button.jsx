@@ -43,12 +43,19 @@ const Button = forwardRef(function Button(
   { className, variant, size, asChild = false, loading = false, children, disabled, ...props },
   ref
 ) {
-  const Comp = asChild ? Slot : 'button';
+  if (asChild) {
+    return (
+      <Slot ref={ref} className={cn(buttonVariants({ variant, size }), className)} {...props}>
+        {children}
+      </Slot>
+    );
+  }
+
   return (
-    <Comp ref={ref} className={cn(buttonVariants({ variant, size }), className)} disabled={disabled || loading} {...props}>
-      {loading && !asChild && <Loader2 className="animate-spin" size={size === 'sm' ? 13 : 15} aria-hidden />}
+    <button ref={ref} className={cn(buttonVariants({ variant, size }), className)} disabled={disabled || loading} {...props}>
+      {loading && <Loader2 className="animate-spin" size={size === 'sm' ? 13 : 15} aria-hidden />}
       {children}
-    </Comp>
+    </button>
   );
 });
 
