@@ -40,6 +40,7 @@ const getMockData = async (url) => {
   if (url.includes('/stations/')) return (await import('../../../contracts/mocks/station_forecast.json')).default;
   if (url.includes('/attribution')) return (await import('../../../contracts/mocks/attribution.json')).default;
   if (url.includes('/trajectories')) return JSON.parse((await import('../../../contracts/mocks/trajectories.geojson?raw')).default);
+  if (url.includes('/fires')) return JSON.parse((await import('../../../contracts/mocks/fires_48h.geojson?raw')).default);
   if (url.includes('/skill')) return (await import('../../../contracts/mocks/skill.json')).default;
   if (url.includes('/fleet/')) return (await import('../../../contracts/mocks/fleet_exposure.json')).default;
   if (url.includes('/actions')) return (await import('../../../contracts/mocks/actions.json')).default;
@@ -67,6 +68,7 @@ export const fetchForecastH3 = (runId, validHour) => {
 export const fetchStationForecast = (id) => api.get(`/stations/${id}/forecast`);
 export const fetchAttribution = () => api.get('/attribution');
 export const fetchTrajectories = () => api.get('/trajectories');
+export const fetchFires = (runId) => api.get(`/fires${runId ? `?run_id=${runId}` : ''}`);
 export const fetchSkill = () => api.get('/skill');
 export const fetchFleetExposure = (id, date) => api.get(`/fleet/${id}/exposure${date ? `?date=${date}` : ''}`);
 export const fetchActions = (status) => api.get(`/actions${status ? `?status=${status}` : ''}`);

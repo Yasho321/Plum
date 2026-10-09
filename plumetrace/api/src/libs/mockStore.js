@@ -24,6 +24,7 @@ const forecastGeo = readJson('forecast_h3.geojson');
 const stationBundle = readJson('station_forecast.json');
 const attribution = readJson('attribution.json');
 const trajectories = readJson('trajectories.geojson');
+const fires = readJson('fires_48h.geojson');
 const skill = readJson('skill.json');
 const fleetExposure = readJson('fleet_exposure.json');
 const chatEvents = readFileSync(join(MOCKS, 'chat_stream.jsonl'), 'utf8')
@@ -71,6 +72,7 @@ export function getTrajectories(stationId) {
   };
 }
 
+export const getFires = () => fires;
 export const getSkill = (/* days */) => skill;
 export const getFleetExposure = (/* fleetId, date */) => fleetExposure;
 

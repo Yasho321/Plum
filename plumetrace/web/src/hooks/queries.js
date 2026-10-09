@@ -8,7 +8,7 @@
  * STATUS   : DONE
  */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api, { fetchSummary, fetchForecastH3, fetchStationForecast, fetchAttribution, fetchTrajectories, fetchSkill, fetchFleetExposure, fetchActions } from '../lib/api';
+import api, { fetchSummary, fetchForecastH3, fetchStationForecast, fetchAttribution, fetchTrajectories, fetchFires, fetchSkill, fetchFleetExposure, fetchActions } from '../lib/api';
 import { useTimeStore } from '../stores/timeStore';
 
 export function useLatestRun() {
@@ -52,6 +52,14 @@ export function useTrajectories(runId, stationId) {
   return useQuery({
     queryKey: ['trajectories', runId, stationId],
     queryFn: async () => (await fetchTrajectories()).data,
+    enabled: !!runId,
+  });
+}
+
+export function useFires(runId) {
+  return useQuery({
+    queryKey: ['fires', runId],
+    queryFn: async () => (await fetchFires(runId)).data,
     enabled: !!runId,
   });
 }

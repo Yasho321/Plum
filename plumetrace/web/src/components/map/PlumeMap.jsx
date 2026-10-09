@@ -12,7 +12,7 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { MapboxOverlay } from '@deck.gl/mapbox';
 import { useTimeStore } from '../../stores/timeStore';
-import { useLatestRun, useForecast, useTrajectories } from '../../hooks/queries';
+import { useLatestRun, useForecast, useTrajectories, useFires } from '../../hooks/queries';
 import { createFiresLayer, createTripsLayer, createH3Layer, createDistrictsLayer } from './layers';
 
 const DEFAULT_STYLE = 'https://demotiles.maplibre.org/style.json';
@@ -30,31 +30,36 @@ export default function PlumeMap({ districtData, fireData }) {
   const currentRunId = runId || latestRun?.run_id;
   const { data: forecastData } = useForecast(currentRunId, validHour);
   const { data: trajectoriesData } = useTrajectories(currentRunId, 'all');
+  const { data: firesData } = useFires(currentRunId);
 
   useEffect(() => {
     if (!mapContainer.current || mapRef.current) return;
-    
+
     const styleUrl = import.meta.env.VITE_LOCATION_STYLE_URL || DEFAULT_STYLE;
-    
-    mapRef.current = new maplibregl.Map({
+
+    const map = new maplibregl.Map({
       container: mapContainer.current,
       style: styleUrl,
       center: [76.9, 28.6],
-      zoom: 7
+      zoom: 7,
     });
+    mapRef.current = map;
 
-    overlayRef.current = new MapboxOverlay({
-      interleaved: true,
-      layers: []
-    });
-    
-    mapRef.current.addControl(overlayRef.current);
+    // Overlaid (not interleaved): deck.gl renders on its own canvas on top, so the
+    // PM2.5 / trajectory layers show even if the base-map tiles are slow or blocked.
+    overlayRef.current = new MapboxOverlay({ interleaved: false, layers: [] });
+    map.addControl(overlayRef.current);
+
+    // Maps created before the flex layout settles can init at 0×0 and stay blank;
+    // force a resize on load and whenever the container changes size.
+    map.on('load', () => map.resize());
+    const ro = new ResizeObserver(() => map.resize());
+    ro.observe(mapContainer.current);
 
     return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
+      ro.disconnect();
+      map.remove();
+      mapRef.current = null;
     };
   }, []);
 
@@ -75,12 +80,12 @@ export default function PlumeMap({ districtData, fireData }) {
     const layers = [
       createH3Layer(forecastData),
       createDistrictsLayer(districtData),
-      createFiresLayer(fireData),
+      createFiresLayer(fireData || firesData),
       createTripsLayer(trajectoriesData, currentTime)
     ].filter(Boolean);
 
     overlayRef.current.setProps({ layers });
-  }, [forecastData, districtData, fireData, trajectoriesData, currentTime]);
+  }, [forecastData, districtData, fireData, firesData, trajectoriesData, currentTime]);
 
   return (
     <div className="relative w-full h-full min-h-[400px]">

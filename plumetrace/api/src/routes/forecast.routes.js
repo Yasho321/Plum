@@ -19,6 +19,7 @@ router.get('/forecast', validate(ForecastQuery, 'query'), c.getForecast);
 router.get('/stations/:id/forecast', c.getStationForecast);
 router.get('/attribution', validate(AttributionQuery, 'query'), c.getAttribution);
 router.get('/trajectories', c.getTrajectories);
+router.get('/fires', c.getFires);
 router.get('/skill', validate(SkillQuery, 'query'), c.getSkill);
 
 export default router;

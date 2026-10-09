@@ -137,6 +137,12 @@ export const svcSkill = async (/* days */) => {
   return getS3Json('outputs/skill/latest.json');
 };
 
+export const svcFires = async (runId) => {
+  if (env.MOCK_MODE) return mock.getFires();
+  const run = runId || (await latestPointer()).run_id;
+  return getS3Json(`outputs/run=${run}/fires_48h.geojson`);
+};
+
 /* ------------------------------- handlers --------------------------------- */
 export const getLatestRun = asyncHandler(async (_req, res) => res.json(await svcSummary()));
 
@@ -157,6 +163,10 @@ export const getAttribution = asyncHandler(async (req, res) => {
 
 export const getTrajectories = asyncHandler(async (req, res) => {
   res.json(await svcTrajectories(req.query.station));
+});
+
+export const getFires = asyncHandler(async (req, res) => {
+  res.json(await svcFires(req.query.run_id));
 });
 
 export const getSkill = asyncHandler(async (req, res) => {
