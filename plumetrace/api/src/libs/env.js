@@ -20,6 +20,13 @@ const base = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.coerce.number().int().default(8080),
   MOCK_MODE: boolish,
+  // AGENT_LIVE=1 runs the REAL Anthropic Copilot even while MOCK_MODE serves mock
+  // REST/tool data — the demo sweet spot (live Claude over mocks, no engine/gov/fleet).
+  // Default OFF so MOCK_MODE alone keeps the recorded mock chat (backward compatible).
+  AGENT_LIVE: z
+    .union([z.string(), z.boolean()])
+    .default('0')
+    .transform((v) => v === true || ['1', 'true', 'yes', 'on'].includes(String(v).toLowerCase())),
   AWS_REGION: z.string().default('us-east-1'),
 
   // Allowed browser origins (Amplify + local Vite). Comma-separated.
