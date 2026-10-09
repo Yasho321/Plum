@@ -18,9 +18,20 @@ export function createFiresLayer(data) {
     id: 'fires-layer',
     data: data.features,
     getPosition: d => d.geometry.coordinates,
-    getRadius: d => Math.sqrt(d.properties?.frp || 0) * 500,
-    getFillColor: [255, 100, 0, 200],
-    pickable: true
+    getRadius: d => 600 + Math.sqrt(d.properties?.frp || 0) * 450,
+    radiusUnits: 'meters',
+    radiusMinPixels: 2.5,
+    radiusMaxPixels: 16,
+    // fresh fires glow brighter; older ones fade toward deep red
+    getFillColor: d => {
+      const age = d.properties?.age_h ?? 0;
+      const t = Math.min(age / 48, 1);
+      return [255, Math.round(140 - t * 90), Math.round(40 - t * 30), 210];
+    },
+    stroked: true,
+    getLineColor: [255, 180, 80, 120],
+    lineWidthMinPixels: 0.5,
+    pickable: true,
   });
 }
 
@@ -42,11 +53,14 @@ export function createTripsLayer(data, currentTime) {
       }
       return d.geometry.coordinates.map((_, i) => i);
     },
-    getColor: [255, 200, 100],
-    opacity: 0.8,
-    widthMinPixels: 2,
-    trailLength: 12,            // hours
-    currentTime: currentTime
+    getColor: [120, 220, 255],
+    opacity: 0.9,
+    widthMinPixels: 3,
+    jointRounded: true,
+    capRounded: true,
+    fadeTrail: true,
+    trailLength: 14,           // hours
+    currentTime: currentTime,
   });
 }
 
@@ -56,26 +70,29 @@ export function createH3Layer(data, uncertaintyToggle = false) {
     id: 'h3-layer',
     data: data.features,
     getHexagon: d => d.properties?.h3 || d.h3,
+    filled: true,
+    stroked: true,
+    extruded: false,
+    opacity: 0.55,
+    getLineColor: [255, 255, 255, 25],
+    lineWidthMinPixels: 0.5,
     getFillColor: d => {
       const pm25 = d.properties?.pm25 ?? d.pm25;
-      if (pm25 == null) return [128, 128, 128, 100];
-      
+      if (pm25 == null) return [90, 100, 120, 55]; // "no data" cells, faint slate
       const hex = getAqiColor(pm25);
       const r = parseInt(hex.slice(1, 3), 16);
       const g = parseInt(hex.slice(3, 5), 16);
       const b = parseInt(hex.slice(5, 7), 16);
-      
-      let alpha = 200;
+      let alpha = 235;
       if (uncertaintyToggle) {
         const p10 = d.properties?.pm25_p10 ?? d.pm25_p10 ?? 0;
         const p90 = d.properties?.pm25_p90 ?? d.pm25_p90 ?? 0;
-        const width = p90 - p10;
-        alpha = Math.max(50, 255 - width * 2); 
+        alpha = Math.max(70, 255 - (p90 - p10) * 2);
       }
       return [r, g, b, alpha];
     },
+    updateTriggers: { getFillColor: [uncertaintyToggle] },
     pickable: true,
-    extruded: false
   });
 }
 

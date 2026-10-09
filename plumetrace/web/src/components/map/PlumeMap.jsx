@@ -17,24 +17,22 @@ import { createFiresLayer, createTripsLayer, createH3Layer, createDistrictsLayer
 
 // A self-contained dark raster style (CARTO dark basemap, no API key) so the map
 // always renders locally. In prod, VITE_LOCATION_STYLE_URL points at Amazon Location.
+// Keyless dark basemap (Esri Dark Gray Canvas) so the map renders locally with no
+// API key. In prod, VITE_LOCATION_STYLE_URL points at Amazon Location.
 const DEFAULT_STYLE = {
   version: 8,
-  glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
   sources: {
-    carto: {
+    esriDark: {
       type: 'raster',
-      tiles: [
-        'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-        'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-        'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-      ],
+      tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'],
       tileSize: 256,
-      attribution: '© OpenStreetMap, © CARTO',
+      attribution: 'Esri, HERE, Garmin, © OpenStreetMap contributors',
+      maxzoom: 16,
     },
   },
   layers: [
     { id: 'bg', type: 'background', paint: { 'background-color': '#0a0c11' } },
-    { id: 'carto', type: 'raster', source: 'carto', paint: { 'raster-opacity': 0.85 } },
+    { id: 'esriDark', type: 'raster', source: 'esriDark', paint: { 'raster-opacity': 0.9 } },
   ],
 };
 
