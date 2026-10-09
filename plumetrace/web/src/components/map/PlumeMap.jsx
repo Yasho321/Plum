@@ -113,8 +113,8 @@ export default function PlumeMap({ districtData, fireData }) {
   const fires = (fireData || firesData)?.features?.length ?? 0;
 
   return (
-    <div className="relative w-full h-full min-h-[420px]">
-      <div ref={mapContainer} className="absolute inset-0" style={{ background: '#0a0c11' }} />
+    <div className="absolute inset-0">
+      <div ref={mapContainer} className="w-full h-full" style={{ background: '#0a0c11' }} />
       {DEBUG && (
         <div className="absolute top-4 left-4 z-10 pt-glass rounded-lg px-3 py-2 text-[11px] font-mono leading-relaxed pointer-events-none">
           <div>map: <span className={status === 'ready' ? 'text-success' : 'text-destructive'}>{status}</span></div>

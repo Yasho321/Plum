@@ -28,7 +28,7 @@ export default function GovernmentPage() {
   const handleGenerateReport = () => sendMessage('Generate a district report based on the latest forecast.');
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full min-h-0">
       {/* Left rail */}
       <aside className="w-[380px] min-w-[340px] border-r border-border flex flex-col overflow-auto">
         <div className="p-5 pb-3 flex items-center justify-between">
@@ -98,14 +98,14 @@ export default function GovernmentPage() {
       </aside>
 
       {/* Map */}
-      <div className="flex-1 relative flex flex-col">
-        <div className="flex-1 relative">
+      <div className="flex-1 relative flex flex-col min-h-0">
+        <div className="flex-1 relative min-h-0">
           <PlumeMap districtData={null} fireData={null} />
-          <div className="absolute top-4 right-4 pointer-events-auto">
+          <div className="absolute top-4 right-4 z-10 pointer-events-auto">
             <AqiLegend />
           </div>
         </div>
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-border shrink-0">
           <TimeSlider />
         </div>
       </div>
