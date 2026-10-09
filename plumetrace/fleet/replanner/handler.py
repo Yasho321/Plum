@@ -17,9 +17,16 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from .common import Context, Order, Rider, SlotGrid, IST
+from .common import Context, Order, Rider, SlotGrid, IST, default_segment_dose_ug
 from .cpsat_model import CpInfeasible, replan_cpsat
 from .greedy import replan_greedy
+
+# Use Khare's shared dose function (same §13.2 formula) as the single source of
+# truth; fall back to the identical local default if fleet.dose isn't importable.
+try:
+    from fleet.dose.dose import segment_dose_ug as SEGMENT_DOSE
+except Exception:  # pragma: no cover
+    SEGMENT_DOSE = default_segment_dose_ug
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MOCKS = REPO_ROOT / "contracts" / "mocks"
@@ -113,7 +120,9 @@ def build_demo_instance(n_riders: int = 50, n_orders: int = 600, date: str = "20
             ))
             k += 1
 
-    ctx = Context(grid=grid, conc=DemoConcField().pm25)
+    # DemoConcField supplies the IST diurnal curve the mock forecast lacks (it has
+    # one hour); the real path uses Khare's ConcLookup, which carries per-hour data.
+    ctx = Context(grid=grid, conc=DemoConcField().pm25, segment_dose=SEGMENT_DOSE)
     return orders, riders, ctx
 
 
