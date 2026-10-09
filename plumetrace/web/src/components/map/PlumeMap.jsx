@@ -19,6 +19,7 @@ import { createFiresLayer, createTripsLayer, createH3Layer, createDistrictsLayer
 // always renders locally. In prod, VITE_LOCATION_STYLE_URL points at Amazon Location.
 const DEFAULT_STYLE = {
   version: 8,
+  glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
   sources: {
     carto: {
       type: 'raster',
@@ -33,9 +34,11 @@ const DEFAULT_STYLE = {
   },
   layers: [
     { id: 'bg', type: 'background', paint: { 'background-color': '#0a0c11' } },
-    { id: 'carto', type: 'raster', source: 'carto', paint: { 'raster-opacity': 0.9 } },
+    { id: 'carto', type: 'raster', source: 'carto', paint: { 'raster-opacity': 0.85 } },
   ],
 };
+
+const DEBUG = import.meta.env.DEV;
 
 export default function PlumeMap({ districtData, fireData }) {
   const mapContainer = useRef(null);
@@ -43,73 +46,82 @@ export default function PlumeMap({ districtData, fireData }) {
   const overlayRef = useRef(null);
   const { runId, getValidHour } = useTimeStore();
   const validHour = getValidHour();
-  
+
   const [currentTime, setCurrentTime] = useState(0);
-  
+  const [status, setStatus] = useState('init');
+
   const { data: latestRun } = useLatestRun();
   const currentRunId = runId || latestRun?.run_id;
   const { data: forecastData } = useForecast(currentRunId, validHour);
   const { data: trajectoriesData } = useTrajectories(currentRunId, 'all');
   const { data: firesData } = useFires(currentRunId);
 
+  // --- init map once ---
   useEffect(() => {
     if (!mapContainer.current || mapRef.current) return;
+    const style = import.meta.env.VITE_LOCATION_STYLE_URL || DEFAULT_STYLE;
 
-    const styleUrl = import.meta.env.VITE_LOCATION_STYLE_URL || DEFAULT_STYLE;
-
-    const map = new maplibregl.Map({
-      container: mapContainer.current,
-      style: styleUrl,
-      center: [76.9, 28.6],
-      zoom: 7,
-    });
+    let map;
+    try {
+      map = new maplibregl.Map({ container: mapContainer.current, style, center: [76.9, 28.6], zoom: 6.4, attributionControl: false });
+    } catch (e) {
+      console.error('[PlumeMap] map construct failed', e);
+      setStatus('map-construct-error: ' + (e?.message || e));
+      return;
+    }
     mapRef.current = map;
 
-    // Overlaid (not interleaved): deck.gl renders on its own canvas on top, so the
-    // PM2.5 / trajectory layers show even if the base-map tiles are slow or blocked.
-    overlayRef.current = new MapboxOverlay({ interleaved: false, layers: [] });
-    map.addControl(overlayRef.current);
+    const overlay = new MapboxOverlay({
+      interleaved: false,
+      layers: [],
+      onError: (err) => { console.error('[PlumeMap] deck error', err); setStatus('deck-error: ' + (err?.message || err)); },
+    });
+    overlayRef.current = overlay;
+    map.addControl(overlay);
 
-    // Maps created before the flex layout settles can init at 0×0 and stay blank;
-    // force a resize on load and whenever the container changes size.
-    map.on('load', () => map.resize());
+    map.on('load', () => { map.resize(); setStatus('ready'); console.log('[PlumeMap] map loaded', mapContainer.current?.clientWidth, '×', mapContainer.current?.clientHeight); });
+    map.on('error', (e) => { console.error('[PlumeMap] map error', e?.error || e); setStatus('map-error: ' + (e?.error?.message || 'see console')); });
+
     const ro = new ResizeObserver(() => map.resize());
     ro.observe(mapContainer.current);
 
-    return () => {
-      ro.disconnect();
-      map.remove();
-      mapRef.current = null;
-    };
+    return () => { ro.disconnect(); map.remove(); mapRef.current = null; overlayRef.current = null; };
   }, []);
 
+  // --- animate the trips "smoke flow" ---
   useEffect(() => {
-    let animation;
-    const animate = () => {
-      // currentTime is in HOURS to match createTripsLayer's getTimestamps (0..72).
-      setCurrentTime(t => (t + 0.1) % 72);
-      animation = requestAnimationFrame(animate);
-    };
-    animate();
-    return () => cancelAnimationFrame(animation);
+    let raf;
+    const tick = () => { setCurrentTime((t) => (t + 0.15) % 72); raf = requestAnimationFrame(tick); };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, []);
 
+  // --- push layers whenever data (or the animation clock) changes ---
   useEffect(() => {
     if (!overlayRef.current) return;
-    
     const layers = [
       createH3Layer(forecastData),
       createDistrictsLayer(districtData),
       createFiresLayer(fireData || firesData),
-      createTripsLayer(trajectoriesData, currentTime)
+      createTripsLayer(trajectoriesData, currentTime),
     ].filter(Boolean);
-
     overlayRef.current.setProps({ layers });
   }, [forecastData, districtData, fireData, firesData, trajectoriesData, currentTime]);
 
+  const cells = forecastData?.features?.length ?? 0;
+  const traj = trajectoriesData?.features?.length ?? 0;
+  const fires = (fireData || firesData)?.features?.length ?? 0;
+
   return (
-    <div className="relative w-full h-full min-h-[400px]">
-      <div ref={mapContainer} className="absolute inset-0" />
+    <div className="relative w-full h-full min-h-[420px]">
+      <div ref={mapContainer} className="absolute inset-0" style={{ background: '#0a0c11' }} />
+      {DEBUG && (
+        <div className="absolute top-4 left-4 z-10 pt-glass rounded-lg px-3 py-2 text-[11px] font-mono leading-relaxed pointer-events-none">
+          <div>map: <span className={status === 'ready' ? 'text-success' : 'text-destructive'}>{status}</span></div>
+          <div>run: {currentRunId || '—'} · vh: {validHour ? validHour.slice(11) : '—'}</div>
+          <div>cells: {cells} · traj: {traj} · fires: {fires}</div>
+        </div>
+      )}
     </div>
   );
 }
