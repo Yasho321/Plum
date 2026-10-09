@@ -142,6 +142,15 @@ export class ApiStack extends cdk.Stack {
         TMPDIR: "/tmp",
         BUN_RUNTIME_TRANSPILER_CACHE_PATH: "/tmp/bun-transpiler-cache",
         BUN_INSTALL: "/tmp/.bun",
+        // Lambda Web Adapter invoke mode. The browser talks to this function ONLY
+        // through the HTTP API (HttpLambdaIntegration) — a buffered proxy integration
+        // that expects a `{statusCode, headers, body}` envelope. The Dockerfile sets
+        // AWS_LWA_INVOKE_MODE=response_stream (for the SSE Function URL), but in that
+        // mode LWA returns a streaming-protocol envelope the HTTP API cannot parse, so
+        // API Gateway returned 500 on every route even though the Lambda logged 200
+        // (0 Lambda errors, 56 APIGW 5xx). A Lambda env var overrides the image ENV,
+        // so force buffered here to make the whole REST + chat surface respond.
+        AWS_LWA_INVOKE_MODE: "buffered",
         NODE_ENV: "production",
         PT_STAGE: props.stage,
         MOCK_MODE: props.stage === "dev" ? "1" : "0",
