@@ -58,9 +58,9 @@ export default api;
 
 export const fetchSummary = () => api.get('/runs/latest');
 export const fetchForecastH3 = () => api.get('/forecast');
-export const fetchStationForecast = (id) => api.get(`/stations/${id}`);
+export const fetchStationForecast = (id) => api.get(`/stations/${id}/forecast`);
 export const fetchAttribution = () => api.get('/attribution');
 export const fetchTrajectories = () => api.get('/trajectories');
 export const fetchSkill = () => api.get('/skill');
-export const fetchFleetExposure = (id) => api.get(`/fleet/${id}`);
+export const fetchFleetExposure = (id) => api.get(`/fleet/${id}/exposure`);
 export const fetchActions = () => api.get('/actions');

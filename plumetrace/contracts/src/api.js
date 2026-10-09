@@ -309,7 +309,7 @@ export const SkillQuery = z.object({
 });
 
 export const AttributionQuery = z.object({
-  date: dateOnly,
+  date: dateOnly.optional(),   // defaults to the latest run's date when omitted
 });
 
 export const ActionsQuery = z.object({

@@ -106,6 +106,7 @@ export const svcStation = async (id, runId) => {
 
 export const svcAttribution = async (date) => {
   if (env.MOCK_MODE) return mock.getAttribution(date);
+  date = date || new Date().toISOString().slice(0, 10); // default to today when omitted
   const doc = await getDocClient();
   const { QueryCommand } = await getDdbCommands();
   const { Items = [] } = await doc.send(new QueryCommand({
