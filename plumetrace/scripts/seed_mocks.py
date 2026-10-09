@@ -41,7 +41,7 @@ def forecast_items() -> list[dict]:
         items.append({
             "pk": f"h3#{p['h3']}",
             "sk": f"{p['run_id']}#{p['valid_hour']}",
-            "gsi1sk": f"{p['valid_hour']}#{p['h3']}",   # GSI byRun sort key (D-15)
+            "gsi1sk": f"{p['valid_hour']}#{p['h3']}",   # GSI byRun sort key (D-16)
             "run_id": p["run_id"], "valid_hour": p["valid_hour"], "h3": p["h3"],
             "pm25": p["pm25"], "pm25_p10": p["pm25_p10"], "pm25_p90": p["pm25_p90"],
             "fire_share": p["fire_share"], "fire_share_p10": p["fire_share_p10"], "fire_share_p90": p["fire_share_p90"],
