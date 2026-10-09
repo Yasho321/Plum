@@ -131,6 +131,12 @@ export class ApiStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(60),
       environment: {
         // Names here MUST match api/src/libs/env.js (documented in api/.env.example).
+        // Bun on Lambda: the filesystem is read-only except /tmp. Redirect Bun's
+        // writes (transpiler cache + home) to /tmp, or it crashes at init with
+        // "bun is unable to write files: EROFS" and every route returns 500.
+        HOME: "/tmp",
+        TMPDIR: "/tmp",
+        BUN_RUNTIME_TRANSPILER_CACHE_PATH: "0",
         NODE_ENV: "production",
         PT_STAGE: props.stage,
         MOCK_MODE: props.stage === "dev" ? "1" : "0",
