@@ -6,96 +6,162 @@
  * DONE WHEN: -
  * GUIDE    : docs/team/TANMAY.md  |  brief: docs/PROJECT_BRIEF.md
  * STATUS   : DONE
+ *
+ * UI revamp (tejas/ui-revamp): rebuilt @theme on a validated token system —
+ * cool-slate neutral ramp, sky-blue brand + indigo accent, India-NAQI AQI
+ * ordinal ramp (PM2.5 only, dataviz-validated for dark surfaces), status trio.
+ * Token *names* consumed by components are preserved; new tokens added.
  */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  /* India NAQI PM2.5 bands (ordinal severity ramp) */
-  --color-aqi-good: #4ade80;
-  --color-aqi-satisfactory: #a3e635;
-  --color-aqi-moderate: #facc15;
-  --color-aqi-poor: #fb923c;
-  --color-aqi-very-poor: #ef4444;
-  --color-aqi-severe: #b91c1c;
+  /* ---- India NAQI PM2.5 bands — ordinal severity ramp (PM2.5 ONLY) --------
+   * Retuned for perceptual evenness + dark-surface contrast and validated with
+   * the dataviz palette validator (contrast PASS on card #121826 and map
+   * #0a0c11; adjacent CVD in the 6-8 band, always paired with legend order +
+   * numeric µg/m³ labels, never colour alone). Keeps green→…→maroon meaning. */
+  --color-aqi-good: #4cdd92;
+  --color-aqi-satisfactory: #b6e24a;
+  --color-aqi-moderate: #f7a015;
+  --color-aqi-poor: #ee6c26;
+  --color-aqi-very-poor: #e53b45;
+  --color-aqi-severe: #be3787;
 
-  /* Surfaces — deep blue-black with a touch of elevation on cards */
-  --color-background: #0a0c11;
-  --color-foreground: #e7eaf0;
-  --color-card: #121622;
-  --color-card-foreground: #e7eaf0;
-  --color-popover: #121622;
-  --color-popover-foreground: #e7eaf0;
+  /* ---- Neutral ramp — cool slate, 11 steps (surfaces / borders / text) ---- */
+  --color-neutral-1000: #070a10;
+  --color-neutral-950: #0a0c11;   /* map basemap */
+  --color-neutral-900: #0e131c;   /* app background */
+  --color-neutral-850: #121826;   /* card */
+  --color-neutral-800: #161d2c;   /* elevated / secondary */
+  --color-neutral-750: #1b2334;   /* hover / muted surface */
+  --color-neutral-700: #273145;   /* border */
+  --color-neutral-600: #3a4660;   /* strong border / scrollbar */
+  --color-neutral-500: #6b7690;   /* tertiary text */
+  --color-neutral-400: #8b94a7;   /* muted text (5.8:1 on card) */
+  --color-neutral-300: #aeb6c8;   /* secondary text (8.7:1 on card) */
+  --color-neutral-100: #dfe5f0;   /* primary text (14:1 on card) */
+  --color-neutral-0: #f4f7fc;
 
-  /* Brand — a clean sky/cyan that reads as "air" */
-  --color-primary: #38bdf8;
-  --color-primary-foreground: #041019;
-  --color-secondary: #1a2130;
-  --color-secondary-foreground: #e7eaf0;
-  --color-muted: #161c28;
+  /* ---- Semantic surfaces --------------------------------------------------- */
+  --color-background: #0e131c;
+  --color-foreground: #dfe5f0;
+  --color-card: #121826;
+  --color-card-foreground: #dfe5f0;
+  --color-popover: #141b2a;
+  --color-popover-foreground: #dfe5f0;
+  --color-elevated: #161d2c;
+
+  /* ---- Brand — sky blue reads as "air"; indigo accent for depth ----------- */
+  --color-primary: #4aa8ff;
+  --color-primary-foreground: #04121f;
+  --color-primary-weak: #1b3a5e;   /* tinted fills / rings */
+  --color-primary-strong: #7cc1ff; /* hover / emphasis */
+  --color-accent: #818cf8;
+  --color-accent-foreground: #0b0f26;
+
+  --color-secondary: #1b2334;
+  --color-secondary-foreground: #dfe5f0;
+  --color-muted: #161d2c;
   --color-muted-foreground: #8b94a7;
-  --color-accent: #22d3ee;
-  --color-accent-foreground: #04131a;
-  --color-destructive: #ef4444;
-  --color-destructive-foreground: #fef2f2;
-  --color-success: #34d399;
 
-  --color-border: #222a3a;
-  --color-input: #222a3a;
-  --color-ring: #38bdf8;
-  --radius: 0.65rem;
+  /* ---- Status trio — distinct from AQI + brand; always icon + label ------- */
+  --color-success: #16c79a;
+  --color-success-foreground: #04140f;
+  --color-warning: #f5a623;
+  --color-warning-foreground: #1a1203;
+  --color-destructive: #fb5a6a;        /* danger */
+  --color-destructive-foreground: #1a0608;
+
+  --color-border: #273145;
+  --color-input: #273145;
+  --color-ring: #4aa8ff;
+
+  /* ---- Radii — two scales: controls + cards ------------------------------- */
+  --radius: 0.625rem;
+  --radius-sm: 0.4rem;
+  --radius-lg: 0.9rem;
+  --radius-xl: 1.1rem;
 
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* ---- Motion ------------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @layer base {
-  * {
-    border-color: var(--color-border);
-  }
+  * { border-color: var(--color-border); }
   html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
   body {
     font-family: var(--font-sans);
     color: var(--color-foreground);
     background-color: var(--color-background);
-    /* subtle aurora so large dark panels never feel flat */
+    font-feature-settings: 'cv05' 1, 'ss03' 1;
+    /* a faint cool aurora so large dark panels never read as flat */
     background-image:
-      radial-gradient(60rem 40rem at 85% -10%, rgba(56, 189, 248, 0.08), transparent 60%),
-      radial-gradient(50rem 40rem at -10% 110%, rgba(34, 211, 238, 0.06), transparent 55%);
+      radial-gradient(58rem 40rem at 88% -12%, rgba(74, 168, 255, 0.07), transparent 60%),
+      radial-gradient(48rem 38rem at -8% 112%, rgba(129, 140, 248, 0.055), transparent 55%);
     background-attachment: fixed;
   }
 
-  /* Quiet, modern scrollbars */
-  * { scrollbar-width: thin; scrollbar-color: #2a3346 transparent; }
-  *::-webkit-scrollbar { width: 9px; height: 9px; }
-  *::-webkit-scrollbar-thumb { background: #2a3346; border-radius: 9999px; border: 2px solid transparent; background-clip: content-box; }
-  *::-webkit-scrollbar-thumb:hover { background: #3a4660; background-clip: content-box; }
+  /* Tabular figures everywhere numbers live */
+  .tnum { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
 
-  :focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
-  h1, h2, h3 { letter-spacing: -0.01em; }
+  /* Quiet scrollbars */
+  * { scrollbar-width: thin; scrollbar-color: var(--color-neutral-600) transparent; }
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-thumb { background: var(--color-neutral-600); border-radius: 9999px; border: 2px solid transparent; background-clip: content-box; }
+  *::-webkit-scrollbar-thumb:hover { background: #46557a; background-clip: content-box; }
+
+  :focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; border-radius: 3px; }
+  h1, h2, h3, h4 { letter-spacing: -0.018em; }
+  h1 { letter-spacing: -0.03em; }
 }
 
 /* Reusable surface + motion helpers used across the app */
 @layer components {
   .pt-card {
-    background-color: color-mix(in oklab, var(--color-card) 92%, white 2%);
+    background-color: var(--color-card);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    box-shadow: 0 1px 0 0 rgba(255,255,255,0.03) inset, 0 8px 24px -16px rgba(0,0,0,0.8);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 1px 0 0 rgba(255,255,255,0.03) inset, 0 10px 30px -22px rgba(0,0,0,0.9);
   }
   .pt-glass {
-    background: rgba(18, 22, 34, 0.72);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--color-border);
+    background: color-mix(in oklab, var(--color-card) 82%, transparent);
+    backdrop-filter: blur(14px) saturate(1.1);
+    -webkit-backdrop-filter: blur(14px) saturate(1.1);
+    border: 1px solid color-mix(in oklab, var(--color-border) 90%, white 6%);
   }
-  @keyframes pt-fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-  .pt-fade-in { animation: pt-fade-in 0.35s ease both; }
+  .pt-hairline { border: 1px solid var(--color-border); }
+
+  /* motion */
+  @keyframes pt-fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .pt-fade-in { animation: pt-fade-in 0.4s var(--ease-out) both; }
+  @keyframes pt-fade { from { opacity: 0; } to { opacity: 1; } }
+  .pt-fade { animation: pt-fade 0.5s var(--ease-out) both; }
+  /* staggered children: set --i on each child */
+  .pt-stagger > * { animation: pt-fade-in 0.5s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 60ms); }
+
   @keyframes pt-shimmer { 100% { transform: translateX(100%); } }
   .pt-skeleton {
-    position: relative; overflow: hidden; background: var(--color-muted); border-radius: 0.4rem;
+    position: relative; overflow: hidden;
+    background: var(--color-neutral-800); border-radius: var(--radius-sm);
   }
   .pt-skeleton::after {
     content: ''; position: absolute; inset: 0; transform: translateX(-100%);
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
-    animation: pt-shimmer 1.4s infinite;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    animation: pt-shimmer 1.5s infinite;
+  }
+
+  @keyframes pt-pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .pt-pulse-dot { animation: pt-pulse-dot 1.8s ease-in-out infinite; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }
