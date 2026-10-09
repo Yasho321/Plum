@@ -7,10 +7,13 @@
  * GUIDE    : docs/team/TANMAY.md  |  brief: docs/PROJECT_BRIEF.md
  * STATUS   : DONE
  */
-export default function SimulatedBadge() {
+import { FlaskConical } from 'lucide-react';
+import { Badge } from './ui/Badge';
+
+export default function SimulatedBadge({ size = 'md' }) {
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-accent text-accent-foreground border border-border">
-      SIMULATED FLEET
-    </span>
+    <Badge tone="warning" size={size} icon={FlaskConical} className="uppercase tracking-wide">
+      Simulated fleet
+    </Badge>
   );
 }
