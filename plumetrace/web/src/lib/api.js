@@ -57,7 +57,13 @@ const api = USE_MOCKS
 export default api;
 
 export const fetchSummary = () => api.get('/runs/latest');
-export const fetchForecastH3 = () => api.get('/forecast');
+export const fetchForecastH3 = (runId, validHour) => {
+  const p = new URLSearchParams();
+  if (runId) p.set('run_id', runId);
+  if (validHour) p.set('valid_hour', validHour);
+  const qs = p.toString();
+  return api.get(`/forecast${qs ? `?${qs}` : ''}`);
+};
 export const fetchStationForecast = (id) => api.get(`/stations/${id}/forecast`);
 export const fetchAttribution = () => api.get('/attribution');
 export const fetchTrajectories = () => api.get('/trajectories');

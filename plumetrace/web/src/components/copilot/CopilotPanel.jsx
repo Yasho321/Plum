@@ -46,9 +46,9 @@ export default function CopilotPanel() {
         {messages.map((m, i) => (
           <div key={i} className={`flex flex-col max-w-[90%] ${m.role === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'}`}>
             <div className={`p-3 rounded-lg ${m.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
-              <ReactMarkdown className="text-sm [&>p]:mb-2 [&>ul]:list-disc [&>ul]:pl-5 [&>h3]:font-bold [&>h3]:mt-2">
-                {m.content}
-              </ReactMarkdown>
+              <div className="text-sm [&>p]:mb-2 [&>ul]:list-disc [&>ul]:pl-5 [&>h3]:font-bold [&>h3]:mt-2">
+                <ReactMarkdown>{m.content || ''}</ReactMarkdown>
+              </div>
               {m.tools?.map((tool, idx) => (
                 <ToolCallStep key={idx} tool={tool} />
               ))}

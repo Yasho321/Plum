@@ -30,11 +30,22 @@ export function createTripsLayer(data, currentTime) {
     id: 'trips-layer',
     data: data.features,
     getPath: d => d.geometry.coordinates,
-    getTimestamps: d => d.properties?.timestamps || d.geometry.coordinates.map((_, i) => i * 3600),
+    // deck.gl needs NUMERIC timestamps. The contract provides ISO strings
+    // (TrajectoryFeature.properties.timestamps), so convert to hours relative to
+    // the path's earliest point — same unit as currentTime (leadH, 0..72).
+    getTimestamps: d => {
+      const ts = d.properties?.timestamps;
+      if (Array.isArray(ts) && ts.length) {
+        const nums = ts.map(t => (typeof t === 'number' ? t : Date.parse(t) / 3600000));
+        const base = Math.min(...nums);
+        return nums.map(n => n - base);
+      }
+      return d.geometry.coordinates.map((_, i) => i);
+    },
     getColor: [255, 200, 100],
     opacity: 0.8,
     widthMinPixels: 2,
-    trailLength: 6 * 3600,
+    trailLength: 12,            // hours
     currentTime: currentTime
   });
 }

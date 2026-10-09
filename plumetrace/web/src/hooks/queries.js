@@ -9,18 +9,25 @@
  */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api, { fetchSummary, fetchForecastH3, fetchStationForecast, fetchAttribution, fetchTrajectories, fetchSkill, fetchFleetExposure, fetchActions } from '../lib/api';
+import { useTimeStore } from '../stores/timeStore';
 
 export function useLatestRun() {
   return useQuery({
     queryKey: ['latestRun'],
-    queryFn: async () => (await fetchSummary()).data,
+    queryFn: async () => {
+      const data = (await fetchSummary()).data;
+      // Seed the time store so getValidHour() works -> the forecast layer enables.
+      if (data?.run_id && !useTimeStore.getState().runId) useTimeStore.getState().setRunId(data.run_id);
+      return data;
+    },
   });
 }
 
 export function useForecast(runId, validHour) {
   return useQuery({
     queryKey: ['forecast', runId, validHour],
-    queryFn: async () => (await fetchForecastH3()).data,
+    // Pass run_id + valid_hour (required by the real /forecast route; ignored in MOCK_MODE).
+    queryFn: async () => (await fetchForecastH3(runId, validHour)).data,
     enabled: !!runId && !!validHour,
   });
 }
