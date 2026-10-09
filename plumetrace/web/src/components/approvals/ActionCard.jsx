@@ -34,14 +34,22 @@ export default function ActionCard({ action }) {
     (action.type === 'shift_plan' && isFleet) ||
     (action.type === 'rider_notify' && isFleet);
 
+  const p = action.payload || {};
+  const title = {
+    district_report: `District report${p.district ? `: ${p.district}` : ''}`,
+    farmer_alert: `Farmer alert${p.districts ? `: ${p.districts.join(', ')}` : ''}${p.language ? ` (${p.language})` : ''}`,
+    shift_plan: `Shift plan${p.fleet_id ? `: ${p.fleet_id}` : ''}`,
+    rider_notify: 'Rider notifications',
+  }[action.type] || action.type;
+
   const handleApprove = () => {
-    approve.mutate(action.id, {
+    approve.mutate(action.action_id, {
       onSuccess: () => toast.success('Action approved successfully')
     });
   };
 
   const handleReject = () => {
-    reject.mutate(action.id, {
+    reject.mutate(action.action_id, {
       onSuccess: () => toast.success('Action rejected')
     });
   };
@@ -54,7 +62,7 @@ export default function ActionCard({ action }) {
             {typeIcons[action.type] || <FileText size={18} />}
           </div>
           <div>
-            <h3 className="font-semibold leading-tight">{action.summary}</h3>
+            <h3 className="font-semibold leading-tight">{title}</h3>
             <div className="text-xs text-muted-foreground mt-1 flex gap-2 items-center flex-wrap">
               <span className="uppercase font-medium px-1.5 py-0.5 rounded bg-muted">
                 {action.status}

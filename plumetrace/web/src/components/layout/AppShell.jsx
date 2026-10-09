@@ -9,9 +9,15 @@
  */
 import { Link, useLocation } from 'react-router-dom';
 import DegradedBanner from '../DegradedBanner';
+import { useLatestRun } from '../../hooks/queries';
+import { formatIst } from '../../lib/format';
 
 export default function AppShell({ children }) {
   const loc = useLocation();
+  const { data: run } = useLatestRun();
+  const runLabel = run?.run_id
+    ? `run ${run.run_id}${run.issued_at ? ` · ${formatIst(run.issued_at)} IST` : ''}`
+    : 'run: pending';
   const tabs = [
     { name: 'Government', path: '/gov' },
     { name: 'Fleet', path: '/fleet' },
@@ -37,7 +43,7 @@ export default function AppShell({ children }) {
           </nav>
         </div>
         <div className="flex items-center gap-4">
-          <div className="text-xs text-muted-foreground">run_id: pending | IST</div>
+          <div className="text-xs text-muted-foreground">{runLabel}</div>
           <Link to="/copilot" className="px-3 py-1 bg-secondary rounded text-sm hover:bg-secondary/80 transition">Copilot</Link>
         </div>
       </header>

@@ -18,7 +18,7 @@ export default function GovernmentPage() {
   const { data: runData } = useLatestRun();
   const sendMessage = useCopilotStore(s => s.sendMessage);
 
-  const districts = runData?.districts || [];
+  const districts = runData?.hotspot_districts || [];
   
   const handleGenerateReport = () => {
     sendMessage("Generate a district report based on the latest forecast.");
@@ -47,12 +47,14 @@ export default function GovernmentPage() {
             </thead>
             <tbody>
               {districts.map(d => (
-                <tr key={d.id} className="border-b border-border/50">
-                  <td className="py-2">{d.name}</td>
+                <tr key={d.district} className="border-b border-border/50">
+                  <td className="py-2">{d.district}</td>
                   <td className="py-2">
-                    <RangeText p50={d.share_p50} p10={d.share_p10} p90={d.share_p90} />
+                    <RangeText p50={d.share} p10={d.share_p10} p90={d.share_p90} />
                   </td>
-                  <td className="py-2 text-muted-foreground">--</td>
+                  <td className="py-2 text-muted-foreground">
+                    {d.trend_7d != null ? `${d.trend_7d > 0 ? '+' : ''}${Math.round(d.trend_7d * 100)}%` : '--'}
+                  </td>
                 </tr>
               ))}
             </tbody>

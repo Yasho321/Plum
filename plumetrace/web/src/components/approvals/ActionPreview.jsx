@@ -41,7 +41,7 @@ export default function ActionPreview({ action }) {
         <div className="flex flex-col gap-2">
           <span className="font-semibold text-sm">Alert Preview</span>
           <div className="p-3 bg-muted rounded-md text-sm whitespace-pre-wrap">
-            {action.payload.message_text}
+            {action.payload.text || action.payload.message_text}
           </div>
           {action.payload.audio_url && (
             <audio controls className="w-full mt-2" src={action.payload.audio_url}>
@@ -53,30 +53,24 @@ export default function ActionPreview({ action }) {
 
       {action.type === 'shift_plan' && (
         <div className="flex flex-col gap-2">
-          <span className="font-semibold text-sm">Plan Diff</span>
+          <span className="font-semibold text-sm">Plan Impact {action.payload.solver ? `(${action.payload.solver})` : ''}</span>
           <table className="w-full text-sm border-collapse">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="text-left pb-1">Metric</th>
-                <th className="text-left pb-1">Before</th>
-                <th className="text-left pb-1">After</th>
-              </tr>
-            </thead>
             <tbody>
               <tr className="border-b border-border/50">
-                <td className="py-1">Worst-rider %</td>
-                <td className="py-1">{action.payload.before?.worst_rider_pct}%</td>
-                <td className="py-1 text-green-500 font-medium">{action.payload.after?.worst_rider_pct}%</td>
+                <td className="py-1 text-muted-foreground">Worst-rider dose reduction</td>
+                <td className="py-1 text-green-500 font-medium">−{action.payload.dose_reduction_pct?.worst_rider}%</td>
               </tr>
               <tr className="border-b border-border/50">
-                <td className="py-1">Extra minutes</td>
-                <td className="py-1">{action.payload.before?.extra_minutes}</td>
-                <td className="py-1">{action.payload.after?.extra_minutes}</td>
+                <td className="py-1 text-muted-foreground">Fleet dose reduction</td>
+                <td className="py-1 text-green-500 font-medium">−{action.payload.dose_reduction_pct?.fleet_total}%</td>
+              </tr>
+              <tr className="border-b border-border/50">
+                <td className="py-1 text-muted-foreground">Extra minutes (avg / total)</td>
+                <td className="py-1">+{action.payload.extra_minutes?.average} / {action.payload.extra_minutes?.total} min</td>
               </tr>
               <tr>
-                <td className="py-1">Riders changed</td>
-                <td className="py-1">-</td>
-                <td className="py-1">{action.payload.after?.riders_changed}</td>
+                <td className="py-1 text-muted-foreground">Riders changed</td>
+                <td className="py-1">{action.payload.riders_changed}</td>
               </tr>
             </tbody>
           </table>
@@ -87,12 +81,18 @@ export default function ActionPreview({ action }) {
         <div className="flex flex-col gap-2">
           <span className="font-semibold text-sm">Messages</span>
           <div className="space-y-2 max-h-64 overflow-y-auto">
-            {action.payload.messages?.map((m, i) => (
-              <div key={i} className="p-2 border border-border rounded text-sm bg-muted">
-                <div className="font-semibold mb-1">To: {m.rider_id}</div>
-                <div>{m.text}</div>
+            {Array.isArray(action.payload.messages) && action.payload.messages.length > 0 ? (
+              action.payload.messages.map((m, i) => (
+                <div key={i} className="p-2 border border-border rounded text-sm bg-muted">
+                  <div className="font-semibold mb-1">To: {m.rider_id}</div>
+                  <div>{m.text}</div>
+                </div>
+              ))
+            ) : (
+              <div className="text-sm text-muted-foreground">
+                {action.payload.messages_count ?? 0} rider notification(s) drafted.
               </div>
-            ))}
+            )}
           </div>
         </div>
       )}

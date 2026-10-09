@@ -68,5 +68,5 @@ export const fetchStationForecast = (id) => api.get(`/stations/${id}/forecast`);
 export const fetchAttribution = () => api.get('/attribution');
 export const fetchTrajectories = () => api.get('/trajectories');
 export const fetchSkill = () => api.get('/skill');
-export const fetchFleetExposure = (id) => api.get(`/fleet/${id}/exposure`);
-export const fetchActions = () => api.get('/actions');
+export const fetchFleetExposure = (id, date) => api.get(`/fleet/${id}/exposure${date ? `?date=${date}` : ''}`);
+export const fetchActions = (status) => api.get(`/actions${status ? `?status=${status}` : ''}`);

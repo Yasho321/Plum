@@ -61,7 +61,8 @@ export default function PlumeMap({ districtData, fireData }) {
   useEffect(() => {
     let animation;
     const animate = () => {
-      setCurrentTime(t => (t + 100) % (72 * 3600));
+      // currentTime is in HOURS to match createTripsLayer's getTimestamps (0..72).
+      setCurrentTime(t => (t + 0.1) % 72);
       animation = requestAnimationFrame(animate);
     };
     animate();

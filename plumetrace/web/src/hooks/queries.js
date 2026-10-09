@@ -66,15 +66,19 @@ export function useSkill(days = 7) {
 export function useFleetExposure(fleetId, date) {
   return useQuery({
     queryKey: ['fleetExposure', fleetId, date],
-    queryFn: async () => (await fetchFleetExposure(fleetId)).data,
-    enabled: !!fleetId && !!date,
+    queryFn: async () => (await fetchFleetExposure(fleetId, date)).data,
+    enabled: !!fleetId,
   });
 }
 
 export function useActions(status = 'draft') {
   return useQuery({
     queryKey: ['actions', status],
-    queryFn: async () => (await fetchActions()).data,
+    // The API returns { count, actions }; unwrap to the array (status-filtered server-side).
+    queryFn: async () => {
+      const d = (await fetchActions(status)).data;
+      return Array.isArray(d) ? d : (d?.actions ?? []);
+    },
   });
 }
 
