@@ -16,7 +16,7 @@
 export type Stage = "dev" | "demo";
 
 /** Everything lives in us-east-1 (GFS + OpenAQ archive locality, Bedrock) — D-09. */
-export const REGION = "us-east-1";
+export const REGION = "ap-south-1";
 
 export const STAGES: readonly Stage[] = ["dev", "demo"] as const;
 

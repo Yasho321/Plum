@@ -4,7 +4,7 @@
   "context": {
     "stage": "dev",
     "//region": "The deploy region is set by REGION in lib/config.ts (us-east-1); this key is informational. Option A (Anthropic API) has no region constraint — to move everything to e.g. eu-north-1 or ap-south-1, change that one constant.",
-    "region": "us-east-1",
+    "region": "ap-south-1",
     "//anthropicModel": "Copilot model for the Anthropic API (Option A). Any valid Anthropic model id.",
     "anthropicModel": "claude-sonnet-4-6"
   }

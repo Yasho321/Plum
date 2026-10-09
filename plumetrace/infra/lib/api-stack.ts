@@ -102,7 +102,7 @@ export class ApiStack extends cdk.Stack {
     });
 
     for (const g of GROUPS) {
-      new cognito.CfnUserPoolGroup(this, `Group-${g}`, {
+      const group = new cognito.CfnUserPoolGroup(this, `Group-${g}`, {
         userPoolId: this.userPool.userPoolId,
         groupName: g,
       });
@@ -114,11 +114,13 @@ export class ApiStack extends cdk.Stack {
         messageAction: "SUPPRESS",
         userAttributes: [{ name: "email", value: `${g}@plumetrace.demo` }, { name: "email_verified", value: "true" }],
       });
-      new cognito.CfnUserPoolUserToGroupAttachment(this, `Attach-${g}`, {
+      const attachment = new cognito.CfnUserPoolUserToGroupAttachment(this, `Attach-${g}`, {
         userPoolId: this.userPool.userPoolId,
         groupName: g,
         username: user.ref,
-      }).addDependency(user);
+      });
+      attachment.addDependency(user);
+      attachment.addDependency(group);
     }
 
     // --- API container Lambda (Bun + Lambda Web Adapter) --------------------
