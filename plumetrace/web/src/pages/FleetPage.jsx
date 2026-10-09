@@ -26,7 +26,7 @@ export default function FleetPage() {
   const sendMessage = useCopilotStore((s) => s.sendMessage);
   const [filter, setFilter] = useState('all');
 
-  const riders = fleet?.riders || [];
+  const riders = useMemo(() => fleet?.riders || [], [fleet]);
   const total = fleet?.summary?.riders_total ?? riders.length;
   const over = fleet?.summary?.riders_over_budget ?? riders.filter((r) => r.over_budget).length;
   const worst = fleet?.summary?.worst_rider_pct ?? Math.max(0, ...riders.map((r) => r.forecast_dose_pct || 0));

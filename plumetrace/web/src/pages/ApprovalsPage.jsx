@@ -7,7 +7,7 @@
  * GUIDE    : docs/team/TANMAY.md  |  brief: docs/PROJECT_BRIEF.md
  * STATUS   : DONE
  */
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Inbox } from 'lucide-react';
 import { useActions } from '../hooks/queries';
 import ActionCard from '../components/approvals/ActionCard';
@@ -27,14 +27,14 @@ export default function ApprovalsPage() {
 
   const onDecision = (id, status) => setOverrides((o) => ({ ...o, [id]: status }));
 
-  const effective = (a) => overrides[a.action_id] || a.status;
-  const all = Array.isArray(actions) ? actions : [];
+  const effective = useCallback((a) => overrides[a.action_id] || a.status, [overrides]);
+  const all = useMemo(() => (Array.isArray(actions) ? actions : []), [actions]);
 
   const counts = useMemo(() => {
     const c = Object.fromEntries(STATUSES.map((s) => [s, 0]));
     all.forEach((a) => { const s = effective(a); if (s in c) c[s] += 1; });
     return c;
-  }, [all, overrides]);
+  }, [all, effective]);
 
   const filtered = all.filter((a) => effective(a) === statusFilter);
 
