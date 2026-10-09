@@ -1,0 +1,17 @@
+# Keep Docker build contexts (api/Dockerfile, fleet/Dockerfile — both built from
+# the repo root) small, and keep CDK asset staging off node_modules (the Windows
+# junction api/node_modules/@plumetrace/contracts breaks `cdk synth` copy).
+**/node_modules
+.git
+.github
+.venv
+venv
+cdk.out
+infra/cdk.out
+**/__pycache__
+**/*.pyc
+.pytest_cache
+.local-s3
+web/dist
+**/.DS_Store
+*.log
