@@ -2,41 +2,27 @@
  * OWNER    : Yasho2
  * DUE      : D1 23:00
  * TASK     :
- *   Bedrock ConverseStream tool-use loop (max 10 turns): stream text deltas, on toolUse -> validate input with zod -> run tool -> append toolResult -> continue. guardrailConfig on every call. Emit tool_call / tool_result / action_drafted events. Retry once on throttling. NO execute tools exist — drafts only.
+ *   Anthropic Messages API tool-use loop (max 10 turns): stream text deltas, on
+ *   tool_use -> validate input with zod -> run tool -> append tool_result ->
+ *   continue. Keyword guardrail on input (agent/guard.js). Emit tool_call /
+ *   tool_result / action_drafted events. SDK retries on 429/5xx. NO execute
+ *   tools exist — drafts only.
+ *   Option A: direct Anthropic API instead of Bedrock ConverseStream (the loop
+ *   the agent drives and every ChatStreamEvent it emits are unchanged; see
+ *   docs/DECISIONS.md D-ANTHROPIC).
  * DONE WHEN: Works end-to-end on mocks by D2 morning.
  * GUIDE    : docs/team/YASHO2.md  |  brief: docs/PROJECT_BRIEF.md
  * STATUS   : DONE
  */
 import env from '../libs/env.js';
 import logger from '../libs/logger.js';
-import { getBedrock } from '../libs/aws.js';
-import { toToolConfig, runTool } from './tools/index.js';
+import { getAnthropic } from '../libs/anthropic.js';
+import { toAnthropicTools, runTool } from './tools/index.js';
 import SYSTEM_PROMPT from './systemPrompt.js';
+import { guardInput } from './guard.js';
 
 const MAX_TURNS = 10;
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-function guardrailConfig() {
-  if (!env.GUARDRAIL_ID) return undefined;
-  return {
-    guardrailIdentifier: env.GUARDRAIL_ID,
-    guardrailVersion: env.GUARDRAIL_VERSION,
-    streamProcessingMode: 'async',
-  };
-}
-
-/** One ConverseStream call, retried once on throttling with jitter. */
-async function converseStreamOnce(client, Command, params, attempt = 0) {
-  try {
-    return await client.send(new Command(params));
-  } catch (err) {
-    if (attempt === 0 && (err.name === 'ThrottlingException' || err.name === 'ServiceUnavailableException')) {
-      await sleep(600 + Math.random() * 600);
-      return converseStreamOnce(client, Command, params, 1);
-    }
-    throw err;
-  }
-}
+const MAX_TOKENS = 8192;
 
 /**
  * runAgent — drive the tool-use loop, emitting ChatStreamEvents via onEvent.
@@ -44,82 +30,62 @@ async function converseStreamOnce(client, Command, params, attempt = 0) {
  *          onEvent:(e)=>void, isAborted:()=>boolean}} opts
  */
 export async function runAgent({ message, history = [], user, onEvent, isAborted }) {
-  const client = await getBedrock();
-  const { ConverseStreamCommand } = await import('@aws-sdk/client-bedrock-runtime');
+  // Keyword guardrail (replaces the Bedrock Guardrail) — refuse up front.
+  const guard = guardInput(message);
+  if (guard.blocked) {
+    onEvent({ type: 'text', text: guard.message });
+    onEvent({ type: 'done', stop_reason: 'guardrail_intervened' });
+    return;
+  }
 
+  const client = await getAnthropic();
+
+  // Anthropic message history. Content may be a plain string per turn.
   const messages = [
-    ...history.map((h) => ({ role: h.role, content: [{ text: h.text }] })),
-    { role: 'user', content: [{ text: message }] },
+    ...history.map((h) => ({ role: h.role, content: h.text })),
+    { role: 'user', content: message },
   ];
-  const toolConfig = toToolConfig();
+  const tools = toAnthropicTools();
 
   for (let turn = 0; turn < MAX_TURNS; turn++) {
     if (isAborted?.()) return;
 
-    const response = await converseStreamOnce(client, ConverseStreamCommand, {
-      modelId: env.BEDROCK_MODEL_ID,
-      system: [{ text: SYSTEM_PROMPT }],
+    const stream = client.messages.stream({
+      model: env.ANTHROPIC_MODEL,
+      max_tokens: MAX_TOKENS,
+      system: SYSTEM_PROMPT,
       messages,
-      toolConfig,
-      guardrailConfig: guardrailConfig(),
+      tools,
     });
 
-    // Reassemble streamed content blocks by index.
-    const blocks = new Map(); // index -> { type:'text'|'tool', text, toolUseId, name, inputJson }
-    let stopReason = 'end_turn';
-
-    for await (const evt of response.stream) {
-      if (isAborted?.()) return;
-
-      if (evt.contentBlockStart?.start?.toolUse) {
-        const { toolUseId, name } = evt.contentBlockStart.start.toolUse;
-        blocks.set(evt.contentBlockStart.contentBlockIndex, { type: 'tool', toolUseId, name, inputJson: '' });
-      } else if (evt.contentBlockDelta) {
-        const i = evt.contentBlockDelta.contentBlockIndex;
-        const d = evt.contentBlockDelta.delta;
-        if (d?.text !== undefined) {
-          const b = blocks.get(i) || { type: 'text', text: '' };
-          b.text = (b.text || '') + d.text;
-          blocks.set(i, b);
-          onEvent({ type: 'text', text: d.text });
-        } else if (d?.toolUse?.input !== undefined) {
-          const b = blocks.get(i);
-          if (b) b.inputJson += d.toolUse.input;
-        }
-      } else if (evt.messageStop) {
-        stopReason = evt.messageStop.stopReason;
+    // Stream text deltas straight through as `text` events.
+    for await (const event of stream) {
+      if (isAborted?.()) {
+        try { stream.abort(); } catch { /* ignore */ }
+        return;
+      }
+      if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+        onEvent({ type: 'text', text: event.delta.text });
       }
     }
 
-    // Build the assistant message from the collected blocks (ordered by index).
-    const ordered = [...blocks.entries()].sort((a, b) => a[0] - b[0]).map(([, b]) => b);
-    const assistantContent = [];
-    const toolUses = [];
-    for (const b of ordered) {
-      if (b.type === 'text' && b.text) {
-        assistantContent.push({ text: b.text });
-      } else if (b.type === 'tool') {
-        let input = {};
-        try { input = b.inputJson ? JSON.parse(b.inputJson) : {}; } catch { input = {}; }
-        assistantContent.push({ toolUse: { toolUseId: b.toolUseId, name: b.name, input } });
-        toolUses.push({ toolUseId: b.toolUseId, name: b.name, input });
-      }
-    }
-    if (assistantContent.length) messages.push({ role: 'assistant', content: assistantContent });
+    const msg = await stream.finalMessage();
+    messages.push({ role: 'assistant', content: msg.content });
 
-    if (stopReason !== 'tool_use') {
-      onEvent({ type: 'done', stop_reason: stopReason });
+    if (msg.stop_reason !== 'tool_use') {
+      onEvent({ type: 'done', stop_reason: msg.stop_reason });
       return;
     }
 
-    // Run each requested tool and feed results back.
+    // Run each requested tool and feed the results back as one user message.
+    const toolUses = msg.content.filter((b) => b.type === 'tool_use');
     const toolResults = [];
     for (const tu of toolUses) {
       if (isAborted?.()) return;
-      onEvent({ type: 'tool_call', tool_use_id: tu.toolUseId, tool_name: tu.name, input: tu.input });
+      onEvent({ type: 'tool_call', tool_use_id: tu.id, tool_name: tu.name, input: tu.input });
       try {
         const { output, actionType, actionId } = await runTool(tu.name, tu.input, { user });
-        onEvent({ type: 'tool_result', tool_use_id: tu.toolUseId, tool_name: tu.name, output });
+        onEvent({ type: 'tool_result', tool_use_id: tu.id, tool_name: tu.name, output });
         if (actionId && actionType) {
           onEvent({
             type: 'action_drafted',
@@ -129,16 +95,17 @@ export async function runAgent({ message, history = [], user, onEvent, isAborted
           });
         }
         toolResults.push({
-          toolResult: { toolUseId: tu.toolUseId, content: [{ json: output ?? {} }], status: 'success' },
+          type: 'tool_result',
+          tool_use_id: tu.id,
+          content: JSON.stringify(output ?? {}),
         });
       } catch (err) {
         logger.warn({ err: err.message, tool: tu.name }, 'tool failed');
         toolResults.push({
-          toolResult: {
-            toolUseId: tu.toolUseId,
-            content: [{ text: `Tool error: ${err.message}` }],
-            status: 'error',
-          },
+          type: 'tool_result',
+          tool_use_id: tu.id,
+          content: `Tool error: ${err.message}`,
+          is_error: true,
         });
       }
     }

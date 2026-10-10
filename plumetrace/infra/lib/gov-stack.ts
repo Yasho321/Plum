@@ -56,6 +56,13 @@ export class GovStack extends cdk.Stack {
         memorySize: memoryMb,
         timeout: cdk.Duration.seconds(timeoutS),
         environment: commonEnv,
+        bundling: {
+          // reportGenerator renders PDFs with puppeteer-core + Chromium, provided at
+          // runtime via a Lambda layer (NOT bundled by esbuild). Keeping them external
+          // lets `cdk synth` succeed; attach the Chromium layer before invoking the
+          // report Lambda for real (see docs/HANDOFFS.md). @aws-sdk/* is on the runtime.
+          externalModules: ["@aws-sdk/*", "puppeteer-core", "@sparticuz/chromium"],
+        },
       });
 
     const reportGenerator = mkFn("reportGenerator", "reportGenerator/handler.js", 2048, 60);

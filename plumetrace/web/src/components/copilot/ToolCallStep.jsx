@@ -8,31 +8,38 @@
  * STATUS   : DONE
  */
 import { useState } from 'react';
-import { ChevronDown, ChevronRight, Loader2 } from 'lucide-react';
+import { ChevronRight, Loader2, Wrench, Check } from 'lucide-react';
 
 export default function ToolCallStep({ tool }) {
   const [open, setOpen] = useState(false);
-  const isRunning = tool.status === 'running';
+  const running = tool.status === 'running';
 
   return (
-    <div className="border border-border rounded-md my-2 overflow-hidden text-sm">
-      <button 
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-2 p-2 bg-muted hover:bg-muted/80 transition-colors"
+    <div className="border border-border rounded-[var(--radius)] my-2 overflow-hidden bg-background/40">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-secondary/50 transition-colors"
       >
-        {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-        {isRunning ? <Loader2 size={14} className="animate-spin" /> : null}
-        <span className="font-mono font-medium">{tool.name}</span>
-        <span className="text-muted-foreground ml-auto">{tool.status}</span>
+        <ChevronRight size={14} className={`text-muted-foreground transition-transform ${open ? 'rotate-90' : ''}`} aria-hidden />
+        {running ? (
+          <Loader2 size={14} className="animate-spin text-primary" aria-hidden />
+        ) : (
+          <Wrench size={13} className="text-muted-foreground" aria-hidden />
+        )}
+        <span className="font-mono text-xs font-medium">{tool.name}</span>
+        <span className={`ml-auto inline-flex items-center gap-1 text-[11px] ${running ? 'text-primary' : 'text-success'}`}>
+          {running ? 'running' : <><Check size={12} aria-hidden /> done</>}
+        </span>
       </button>
       {open && (
-        <div className="p-2 bg-card border-t border-border font-mono text-xs overflow-x-auto">
-          <div className="mb-1 text-muted-foreground">Input:</div>
-          <pre>{JSON.stringify(tool.args, null, 2)}</pre>
-          {tool.result && (
+        <div className="px-3 py-2 border-t border-border font-mono text-[11px] overflow-x-auto bg-background/60">
+          <div className="text-muted-foreground mb-1">Input</div>
+          <pre className="text-foreground/90">{JSON.stringify(tool.args, null, 2)}</pre>
+          {tool.result != null && (
             <>
-              <div className="mt-2 mb-1 text-muted-foreground">Result:</div>
-              <pre>{JSON.stringify(tool.result, null, 2)}</pre>
+              <div className="text-muted-foreground mt-2 mb-1">Result</div>
+              <pre className="text-foreground/90">{JSON.stringify(tool.result, null, 2)}</pre>
             </>
           )}
         </div>

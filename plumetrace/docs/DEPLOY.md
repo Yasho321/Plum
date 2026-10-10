@@ -20,7 +20,7 @@ bash scripts/demo_local.sh          # API :8080 (MOCK_MODE) + web :5173
 | 1 | **NASA FIRMS `MAP_KEY`** | satellite fire detections | https://firms.modaps.eosdis.nasa.gov/api/map_key/ → enter email → key mailed instantly | ✅ |
 | 2 | **OpenAQ API key** | ground PM2.5 (CPCB) | https://explore.openaq.org/ → register → Account → API Keys → create | ✅ |
 | 3 | **Telegram bot token + chat ids** | live alert delivery (text+audio) to a phone | In Telegram, message **@BotFather** → `/newbot` → copy token. Add the bot to a group/DM, send a message, then `https://api.telegram.org/bot<token>/getUpdates` to read each `chat.id` | ✅ |
-| 4 | **AWS account + Bedrock model access** | the Copilot (Claude) + all infra | AWS Console → **Bedrock → Model access** (us-east-1) → enable the latest Claude → copy the model/inference-profile id (e.g. `us.anthropic.claude-...`) | pay-as-you-go |
+| 4 | **AWS account** (all infra) + **Anthropic API key** (the Copilot) | infra; the Copilot runs on the Anthropic API directly (Option A, DECISIONS D-17) — **no Bedrock model access needed** | AWS: a normal account. Anthropic key: https://console.anthropic.com → API Keys → Create key (`sk-ant-...`) | AWS pay-as-you-go; Anthropic pay-as-you-go |
 | 5 | **Amazon Location** API key + map style | prod base map tiles | AWS Console → **Amazon Location Service** → Maps → create map (e.g. `Esri Dark Gray`) → create an API key → style descriptor URL. *(Local uses a keyless Esri basemap, so this is prod-only.)* | low cost |
 | 6 | *(optional)* **CDSE** OAuth client | Sentinel-5P layer (stretch) | https://dataspace.copernicus.eu → register → Dashboard → OAuth clients → create (client_id + secret) | ✅ |
 
@@ -30,6 +30,8 @@ aws secretsmanager create-secret --name plumetrace/firms_map_key --secret-string
 aws secretsmanager create-secret --name plumetrace/openaq_key     --secret-string '<OPENAQ_KEY>'
 aws secretsmanager create-secret --name plumetrace/telegram \
   --secret-string '{"bot_token":"<TOKEN>","chats":{"gov":"<id>","farmer_demo":"<id>","rider_demo":"<id>"}}'
+# Copilot (Option A) — the Anthropic API key. Plain string or {"api_key":"sk-ant-..."}.
+aws secretsmanager create-secret --name plumetrace/anthropic_key --secret-string 'sk-ant-xxxxxxxx'
 # optional: aws secretsmanager create-secret --name plumetrace/cdse --secret-string '{"client_id":"...","client_secret":"..."}'
 ```
 
@@ -56,10 +58,11 @@ BUS_NAME=plumetrace-dev
 # Cognito (ApiStack outputs)
 COGNITO_POOL_ID=us-east-1_xxxxxxxxx
 COGNITO_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
-# Bedrock (from step 1.4 / AgentStack)
-BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-5-20250929-v1:0
-GUARDRAIL_ID=<from AgentStack output>
-GUARDRAIL_VERSION=1
+# Copilot — Anthropic API (Option A). Local real-mode: paste the key. In prod the
+# Lambda reads it from Secrets Manager (ANTHROPIC_SECRET_NAME) — leave ANTHROPIC_API_KEY blank.
+ANTHROPIC_API_KEY=sk-ant-xxxxxxxx
+ANTHROPIC_SECRET_NAME=plumetrace/anthropic_key
+ANTHROPIC_MODEL=claude-sonnet-4-6
 # Tool Lambda names/ARNs (Gov/Fleet stacks)
 FN_REPORT=
 FN_FARMER_ALERT=
@@ -84,8 +87,9 @@ VITE_LOCATION_STYLE_URL=https://maps.geo.us-east-1.amazonaws.com/maps/v0/maps/<M
 ```bash
 # one-time
 cd infra && npm ci && npx cdk bootstrap aws://<account-id>/us-east-1
-# set cdk.json context bedrockModelId to the id from step 1.4
-# set the secrets from section 2
+# (Option A: no Bedrock. cdk.json context `anthropicModel` defaults to claude-sonnet-4-6.)
+# set the secrets from section 2 (incl. plumetrace/anthropic_key)
+# Docker Desktop must be running (NodejsFunction + the API DockerImageFunction bundle via Docker).
 
 # deploy everything (order handled by the app)
 npx cdk deploy --all -c stage=dev --require-approval never -c alarmEmail=you@example.com

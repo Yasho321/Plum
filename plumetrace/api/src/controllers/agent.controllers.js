@@ -5,7 +5,8 @@
  *   Open SSE (text/event-stream, flush headers), run agent/loop.js, write each ChatStreamEvent as `data: <json>\n\n`. Keep conversation history client-side (request carries messages[]). Abort on client disconnect.
  * DONE WHEN: Copilot panel streams live.
  * GUIDE    : docs/team/YASHO2.md  |  brief: docs/PROJECT_BRIEF.md
- * STATUS   : WIP   (mock SSE replay done D1; real Bedrock loop wired D1 23:00 / D2)
+ * STATUS   : DONE   (mock SSE replay when MOCK_MODE && !AGENT_LIVE; else real
+ *            Anthropic loop — Option A. MOCK_MODE=1 + AGENT_LIVE=1 = live Claude over mocks.)
  */
 import env from '../libs/env.js';
 import * as mock from '../libs/mockStore.js';
@@ -33,7 +34,7 @@ export async function chat(req, res) {
   res.on('close', () => { aborted = true; });
 
   try {
-    if (env.MOCK_MODE) {
+    if (env.MOCK_MODE && !env.AGENT_LIVE) {
       // Replay the recorded ideal answer with small, realistic delays.
       for (const event of mock.getChatEvents()) {
         if (aborted) break;
@@ -41,7 +42,8 @@ export async function chat(req, res) {
         await sleep(event.type === 'text' ? 45 : 90);
       }
     } else {
-      // Real Bedrock ConverseStream tool-use loop (built D1 23:00 / D2).
+      // Real Anthropic Copilot (Option A). With MOCK_MODE=1 + AGENT_LIVE=1 the
+      // model is live while the tools read mock data — the demo configuration.
       const { runAgent } = await import('../agent/loop.js');
       await runAgent({
         message: req.body.message,

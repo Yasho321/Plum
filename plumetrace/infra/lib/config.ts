@@ -16,7 +16,7 @@
 export type Stage = "dev" | "demo";
 
 /** Everything lives in us-east-1 (GFS + OpenAQ archive locality, Bedrock) — D-09. */
-export const REGION = "us-east-1";
+export const REGION = "ap-south-1";
 
 export const STAGES: readonly Stage[] = ["dev", "demo"] as const;
 
@@ -70,6 +70,8 @@ export const SECRET_NAMES = {
   openaqKey: "plumetrace/openaq_key",
   telegram: "plumetrace/telegram",
   cdse: "plumetrace/cdse",
+  // Anthropic Copilot key (Option A — direct Anthropic API; see docs/DECISIONS.md).
+  anthropicKey: "plumetrace/anthropic_key",
 } as const;
 
 /**

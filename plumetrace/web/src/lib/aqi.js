@@ -7,13 +7,17 @@
  * GUIDE    : docs/team/TANMAY.md  |  brief: docs/PROJECT_BRIEF.md
  * STATUS   : DONE
  */
+// India NAQI PM2.5 bands. Hexes retuned for perceptual evenness + dark-surface
+// contrast and validated with the dataviz palette validator (contrast PASS on
+// card #121826 and map #0a0c11). Ordinal ramp — always shown with band order +
+// numeric µg/m³, never colour alone. Keep in sync with --color-aqi-* in index.css.
 export const AQI_BANDS = [
-  { min: 0, max: 30, label: 'Good', color: '#4ade80' },
-  { min: 31, max: 60, label: 'Satisfactory', color: '#a3e635' },
-  { min: 61, max: 90, label: 'Moderate', color: '#facc15' },
-  { min: 91, max: 120, label: 'Poor', color: '#fb923c' },
-  { min: 121, max: 250, label: 'Very Poor', color: '#ef4444' },
-  { min: 251, max: 9999, label: 'Severe', color: '#b91c1c' },
+  { min: 0, max: 30, label: 'Good', color: '#4cdd92' },
+  { min: 31, max: 60, label: 'Satisfactory', color: '#b6e24a' },
+  { min: 61, max: 90, label: 'Moderate', color: '#f7a015' },
+  { min: 91, max: 120, label: 'Poor', color: '#ee6c26' },
+  { min: 121, max: 250, label: 'Very Poor', color: '#e53b45' },
+  { min: 251, max: 9999, label: 'Severe', color: '#be3787' },
 ];
 
 export function getAqiBand(pm25) {

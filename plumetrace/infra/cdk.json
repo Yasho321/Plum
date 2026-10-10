@@ -3,8 +3,9 @@
   "app": "npx ts-node --prefer-ts-exts bin/plumetrace.ts",
   "context": {
     "stage": "dev",
-    "region": "us-east-1",
-    "//bedrockModelId": "VERIFY the exact id in the Bedrock console (Model access) for us-east-1; often an inference profile (us.anthropic...).",
-    "bedrockModelId": "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
+    "//region": "The deploy region is set by REGION in lib/config.ts (us-east-1); this key is informational. Option A (Anthropic API) has no region constraint — to move everything to e.g. eu-north-1 or ap-south-1, change that one constant.",
+    "region": "ap-south-1",
+    "//anthropicModel": "Copilot model for the Anthropic API (Option A). Any valid Anthropic model id.",
+    "anthropicModel": "claude-sonnet-4-6"
   }
 }

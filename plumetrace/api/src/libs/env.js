@@ -20,6 +20,13 @@ const base = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.coerce.number().int().default(8080),
   MOCK_MODE: boolish,
+  // AGENT_LIVE=1 runs the REAL Anthropic Copilot even while MOCK_MODE serves mock
+  // REST/tool data — the demo sweet spot (live Claude over mocks, no engine/gov/fleet).
+  // Default OFF so MOCK_MODE alone keeps the recorded mock chat (backward compatible).
+  AGENT_LIVE: z
+    .union([z.string(), z.boolean()])
+    .default('0')
+    .transform((v) => v === true || ['1', 'true', 'yes', 'on'].includes(String(v).toLowerCase())),
   AWS_REGION: z.string().default('us-east-1'),
 
   // Allowed browser origins (Amplify + local Vite). Comma-separated.
@@ -43,7 +50,13 @@ const base = z.object({
   COGNITO_POOL_ID: z.string().optional(),
   COGNITO_CLIENT_ID: z.string().optional(),
 
-  // Bedrock (the Copilot). Often an inference profile id (us.anthropic...).
+  // Anthropic Copilot (Option A — direct Anthropic API, see docs/DECISIONS.md).
+  // Key from ANTHROPIC_API_KEY (local) or ANTHROPIC_SECRET_NAME (Secrets Manager, prod).
+  ANTHROPIC_API_KEY: z.string().optional(),
+  ANTHROPIC_SECRET_NAME: z.string().default('plumetrace/anthropic_key'),
+  ANTHROPIC_MODEL: z.string().default('claude-sonnet-4-6'),
+
+  // Bedrock (LEGACY — unused after Option A; kept so old env/.env files still parse).
   BEDROCK_MODEL_ID: z.string().default('us.anthropic.claude-sonnet-4-5-20250929-v1:0'),
   GUARDRAIL_ID: z.string().optional(),
   GUARDRAIL_VERSION: z.string().default('DRAFT'),

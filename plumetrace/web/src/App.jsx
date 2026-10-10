@@ -11,6 +11,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './stores/authStore';
 
 import AppShell from './components/layout/AppShell';
+import LandingPage from './pages/LandingPage';
 import GovernmentPage from './pages/GovernmentPage';
 import FleetPage from './pages/FleetPage';
 import SkillPage from './pages/SkillPage';
@@ -31,9 +32,9 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 export default function App() {
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/consent" element={<ConsentPage />} />
-      <Route path="/" element={<Navigate to="/gov" replace />} />
+      <Route path="/consent" element={<ProtectedRoute><ConsentPage /></ProtectedRoute>} />
       <Route path="/gov" element={<ProtectedRoute allowedRoles={['gov']}><GovernmentPage /></ProtectedRoute>} />
       <Route path="/fleet" element={<ProtectedRoute allowedRoles={['fleet']}><FleetPage /></ProtectedRoute>} />
       <Route path="/skill" element={<ProtectedRoute><SkillPage /></ProtectedRoute>} />
