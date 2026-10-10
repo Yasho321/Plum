@@ -131,6 +131,26 @@ export class ApiStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(60),
       environment: {
         // Names here MUST match api/src/libs/env.js (documented in api/.env.example).
+        // Bun on Lambda: the filesystem is read-only except /tmp. Redirect every
+        // Bun write (home, temp, AND the runtime transpiler cache) to /tmp, or it
+        // crashes with "bun is unable to write files: EROFS" and the route 500s.
+        // NOTE: the transpiler cache value MUST be a writable directory. Setting it
+        // to "0" does NOT disable the cache on this Bun version — Bun treats "0" as a
+        // relative path and tries to write it under the read-only /var/task, so cold
+        // starts kept crashing. Point it at /tmp (writable, 512 MB ephemeral) instead.
+        HOME: "/tmp",
+        TMPDIR: "/tmp",
+        BUN_RUNTIME_TRANSPILER_CACHE_PATH: "/tmp/bun-transpiler-cache",
+        BUN_INSTALL: "/tmp/.bun",
+        // Lambda Web Adapter invoke mode. The browser talks to this function ONLY
+        // through the HTTP API (HttpLambdaIntegration) — a buffered proxy integration
+        // that expects a `{statusCode, headers, body}` envelope. The Dockerfile sets
+        // AWS_LWA_INVOKE_MODE=response_stream (for the SSE Function URL), but in that
+        // mode LWA returns a streaming-protocol envelope the HTTP API cannot parse, so
+        // API Gateway returned 500 on every route even though the Lambda logged 200
+        // (0 Lambda errors, 56 APIGW 5xx). A Lambda env var overrides the image ENV,
+        // so force buffered here to make the whole REST + chat surface respond.
+        AWS_LWA_INVOKE_MODE: "buffered",
         NODE_ENV: "production",
         PT_STAGE: props.stage,
         MOCK_MODE: props.stage === "dev" ? "1" : "0",

@@ -1,0 +1,118 @@
+# OWNER: Tejas | Deploy the live "Claude over mocks" demo (PtData + PtApi + PtWeb) to AWS.
+# NOTE: this repo nests the project under plumetrace/, so this workflow lives at the TRUE
+# repo root (.github/workflows/) and every step runs inside plumetrace/<dir>.
+# Runs on pushes to `deploy`, or manually (Actions -> Run workflow). Auth = GitHub OIDC.
+name: Deploy (AWS)
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [deploy]
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy-aws
+  cancel-in-progress: false
+
+env:
+  STAGE: dev
+  AWS_REGION: ${{ vars.AWS_REGION }}         # must equal REGION in plumetrace/infra/lib/config.ts (ap-south-1)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      DEMO_PASSWORD: ${{ secrets.DEMO_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Resolve account id
+        run: echo "ACCT=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_ENV"
+
+      - name: Install infra deps
+        working-directory: plumetrace/infra
+        run: npm ci
+
+      - name: CDK bootstrap (idempotent)
+        working-directory: plumetrace/infra
+        run: npx cdk bootstrap "aws://$ACCT/$AWS_REGION"
+
+      # 1) Web shell first — learn the public URL.
+      - name: Deploy web shell
+        working-directory: plumetrace/infra
+        run: npx cdk deploy "PtWeb-$STAGE" -c stage=$STAGE -c coreOnly=1 --require-approval never --outputs-file web-out.json
+
+      - name: Capture web outputs
+        working-directory: plumetrace/infra
+        run: |
+          k="PtWeb-$STAGE"
+          echo "SITE_URL=$(jq -r --arg k "$k" '.[$k].SiteUrl' web-out.json)"       >> "$GITHUB_ENV"
+          echo "SITE_BUCKET=$(jq -r --arg k "$k" '.[$k].SiteBucketName' web-out.json)" >> "$GITHUB_ENV"
+          echo "DIST_ID=$(jq -r --arg k "$k" '.[$k].DistributionId' web-out.json)" >> "$GITHUB_ENV"
+
+      # 2) Data + API with the live Claude agent, pointed at the CloudFront origin.
+      - name: Deploy data + API (live Claude over mocks)
+        working-directory: plumetrace/infra
+        run: |
+          npx cdk deploy "PtData-$STAGE" "PtApi-$STAGE" \
+            -c stage=$STAGE -c coreOnly=1 -c agentLive=1 -c webOrigin="$SITE_URL" \
+            --require-approval never --outputs-file api-out.json
+
+      - name: Capture API outputs
+        working-directory: plumetrace/infra
+        run: |
+          k="PtApi-$STAGE"
+          echo "API_URL=$(jq -r --arg k "$k" '.[$k].ApiUrl' api-out.json)"             >> "$GITHUB_ENV"
+          echo "POOL_ID=$(jq -r --arg k "$k" '.[$k].UserPoolId' api-out.json)"         >> "$GITHUB_ENV"
+          echo "CLIENT_ID=$(jq -r --arg k "$k" '.[$k].UserPoolClientId' api-out.json)" >> "$GITHUB_ENV"
+          echo "COGNITO_DOMAIN=$(jq -r --arg k "$k" '.[$k].CognitoDomain' api-out.json)" >> "$GITHUB_ENV"
+
+      # 3) Build the SPA with the real backend config and publish it.
+      - name: Build web with production config
+        working-directory: plumetrace/web
+        run: |
+          npm ci
+          cat > .env.production <<EOF
+          VITE_USE_MOCKS=0
+          VITE_API_URL=$API_URL
+          VITE_COGNITO_USER_POOL_ID=$POOL_ID
+          VITE_COGNITO_CLIENT_ID=$CLIENT_ID
+          VITE_COGNITO_DOMAIN=$COGNITO_DOMAIN
+          VITE_LOCATION_STYLE_URL=
+          EOF
+          npm run build
+
+      - name: Publish to S3 + invalidate CloudFront
+        working-directory: plumetrace/web
+        run: |
+          aws s3 sync dist/ "s3://$SITE_BUCKET/" --delete
+          aws cloudfront create-invalidation --distribution-id "$DIST_ID" --paths '/*'
+
+      # 4) (optional) demo passwords, only if the DEMO_PASSWORD secret is set.
+      - name: Set demo passwords (optional)
+        if: ${{ env.DEMO_PASSWORD != '' }}
+        run: |
+          for u in gov fleet admin; do
+            aws cognito-idp admin-set-user-password \
+              --user-pool-id "$POOL_ID" --username "$u@plumetrace.demo" \
+              --password "$DEMO_PASSWORD" --permanent || true
+          done
+
+      - name: Summary
+        run: |
+          echo "### Deployed :rocket:" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Live URL: $SITE_URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "- API: $API_URL" >> "$GITHUB_STEP_SUMMARY"
